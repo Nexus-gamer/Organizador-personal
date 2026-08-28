@@ -1,0 +1,2996 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Organizador personal</title>
+
+    <style>
+
+        /* =========================
+           VARIABLES DE COLORES
+        ========================= */
+
+        :root {
+            --fondo: #ffffff;
+            --texto: #222222;
+            --boton: #eeeeee;
+            --botonTexto: #222222;
+            --carpeta: #f5f5f5;
+            --carpetaHover: #eeeeee;
+            --borde: #cccccc;
+            --ventana: #ffffff;
+            --editor: #ffffff;
+            --adjunto: #ffffff;
+        }
+
+        body.oscuro {
+
+            --fondo: #181818;
+            --texto: #eeeeee;
+            --boton: #303030;
+            --botonTexto: #eeeeee;
+            --carpeta: #252525;
+            --carpetaHover: #333333;
+            --borde: #444444;
+            --ventana: #242424;
+            --editor: #202020;
+            --adjunto: #252525;
+
+        }
+
+
+        /* =========================
+           CUERPO
+        ========================= */
+
+        body {
+
+            margin: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-bottom: 100px;
+
+            background: var(--fondo);
+            color: var(--texto);
+
+            transition:
+                background 0.3s,
+                color 0.3s;
+
+        }
+
+
+        h1 {
+
+            margin-top: 30px;
+
+        }
+
+
+        /* =========================
+           BOTONES
+        ========================= */
+
+        button {
+
+            font-size: 20px;
+            margin: 10px;
+            padding: 10px 18px;
+            cursor: pointer;
+
+            border: none;
+            border-radius: 10px;
+
+            background: var(--boton);
+            color: var(--botonTexto);
+
+            box-shadow:
+                0 3px 6px rgba(0,0,0,0.2);
+
+            transition: 0.2s;
+
+        }
+
+
+        button:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 5px 10px rgba(0,0,0,0.25);
+
+        }
+
+
+        button:active {
+
+            transform: translateY(1px);
+
+            box-shadow:
+                0 2px 4px rgba(0,0,0,0.2);
+
+        }
+
+
+        /* =========================
+           BOTÓN MODO OSCURO
+        ========================= */
+
+        #botonTema {
+
+            font-size: 20px;
+
+        }
+
+
+        /* =========================
+           VENTANAS
+        ========================= */
+
+        .ventana {
+
+            display: none;
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background:
+                rgba(0,0,0,0.5);
+
+            justify-content: center;
+            align-items: center;
+
+            z-index: 1000;
+
+        }
+
+
+        .contenidoVentana {
+
+            background: var(--ventana);
+
+            color: var(--texto);
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.3);
+
+            padding: 25px;
+
+            animation:
+                aparecerVentana 0.2s ease;
+
+        }
+
+
+        @keyframes aparecerVentana {
+
+            from {
+
+                transform: scale(0.9);
+                opacity: 0;
+
+            }
+
+            to {
+
+                transform: scale(1);
+                opacity: 1;
+
+            }
+
+        }
+
+
+        #fila {
+
+            display: flex;
+            align-items: center;
+
+            gap: 20px;
+
+            margin: 20px 0;
+
+        }
+
+
+        #icono {
+
+            font-size: 60px;
+
+        }
+
+
+        input {
+
+            background: var(--fondo);
+            color: var(--texto);
+
+            border: 1px solid var(--borde);
+
+            border-radius: 8px;
+
+        }
+
+
+        /* =========================
+           CARPETAS
+        ========================= */
+
+        #listaCarpetas {
+
+            margin-top: 20px;
+
+        }
+
+
+        .carpeta {
+
+            width: 80%;
+
+            margin: 12px auto;
+
+            padding: 16px;
+
+            font-size: 21px;
+
+            cursor: pointer;
+
+            border: none;
+
+            border-radius: 12px;
+
+            background: var(--carpeta);
+
+            color: var(--texto);
+
+            text-align: left;
+
+            box-shadow:
+                0 3px 7px rgba(0,0,0,0.15);
+
+            transition: 0.2s;
+
+            animation:
+                aparecerCarpeta 0.3s ease;
+
+            position: relative;
+
+        }
+
+
+        .carpeta:hover {
+
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 6px 12px rgba(0,0,0,0.2);
+
+            background: var(--carpetaHover);
+
+        }
+
+
+        @keyframes aparecerCarpeta {
+
+            from {
+
+                opacity: 0;
+                transform: translateY(10px);
+
+            }
+
+            to {
+
+                opacity: 1;
+                transform: translateY(0);
+
+            }
+
+        }
+
+
+        /* =========================
+           BOTÓN ELIMINAR CARPETA
+        ========================= */
+
+        .botonEliminarCarpeta {
+
+            float: right;
+
+            margin: 0;
+
+            padding: 6px 10px;
+
+            font-size: 16px;
+
+            background: #d9534f;
+
+            color: white;
+
+            box-shadow: none;
+
+        }
+
+
+        .botonEliminarCarpeta:hover {
+
+            background: #c9302c;
+
+        }
+
+
+        /* =========================
+           SUBCARPETAS
+        ========================= */
+
+        #listaSubcarpetas {
+
+            width: 90%;
+
+            margin: 20px auto;
+
+        }
+
+
+        .subcarpeta {
+
+            width: 90%;
+
+            margin: 10px auto;
+
+            padding: 12px;
+
+            font-size: 20px;
+
+            cursor: pointer;
+
+            border: 1px solid var(--borde);
+
+            border-radius: 8px;
+
+            background: var(--carpeta);
+
+            color: var(--texto);
+
+            text-align: left;
+
+            transition: 0.2s;
+
+            position: relative;
+
+        }
+
+
+        .subcarpeta:hover {
+
+            background: var(--carpetaHover);
+
+            transform: translateY(-2px);
+
+        }
+
+
+        /* =========================
+           VISTA CARPETA
+        ========================= */
+
+        #vistaCarpeta {
+
+            display: none;
+
+            margin-top: 20px;
+
+        }
+
+
+        #contenidoCarpeta {
+
+            width: 90%;
+
+            min-height: 400px;
+
+            margin: 20px auto;
+
+            padding: 10px;
+
+            box-sizing: border-box;
+
+            text-align: left;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 16px;
+
+            background: var(--editor);
+
+            color: var(--texto);
+
+            border: 1px solid var(--borde);
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 3px 10px rgba(0,0,0,0.12);
+
+            overflow: auto;
+
+            transition: 0.2s;
+
+            line-height: 1.5;
+
+        }
+
+
+        #contenidoCarpeta:focus {
+
+            outline: none;
+
+            border-color: #888;
+
+            box-shadow:
+                0 0 0 3px rgba(128,128,128,0.15);
+
+        }
+
+
+        #contenidoCarpeta:empty::before {
+
+            content: "Escribe aquí...";
+
+            color: #999;
+
+            pointer-events: none;
+
+        }
+
+
+        #contenidoCarpeta a {
+
+            color: #4da6ff;
+
+            text-decoration: underline;
+
+            cursor: pointer;
+
+        }
+
+
+        #contenidoCarpeta a:hover {
+
+            color: #80c1ff;
+
+        }
+
+
+        /* =========================
+           ADJUNTOS
+        ========================= */
+
+        #listaAdjuntos {
+
+            width: 90%;
+
+            margin: 20px auto;
+
+            text-align: left;
+
+        }
+
+
+        .adjunto {
+
+            border: 1px solid var(--borde);
+
+            padding: 10px;
+
+            margin: 10px 0;
+
+            border-radius: 8px;
+
+            background: var(--adjunto);
+
+            color: var(--texto);
+
+        }
+
+
+        .adjunto img {
+
+            max-width: 300px;
+
+            max-height: 200px;
+
+        }
+
+
+        .adjunto video {
+
+            max-width: 400px;
+
+            max-height: 250px;
+
+        }
+
+
+        /* =========================
+           BÚSQUEDA
+        ========================= */
+
+        #barraBusqueda input {
+
+            width: 60%;
+
+            max-width: 500px;
+
+            padding: 12px 16px;
+
+            font-size: 18px;
+
+            border: 1px solid var(--borde);
+
+            border-radius: 10px;
+
+            outline: none;
+
+            transition: 0.2s;
+
+        }
+
+
+        #barraBusqueda input:focus {
+
+            border-color: #888;
+
+            box-shadow:
+                0 0 6px rgba(0,0,0,0.2);
+
+        }
+
+
+        /* =========================
+           BARRA INFERIOR
+        ========================= */
+
+        #barraInferior {
+
+            position: fixed;
+
+            bottom: 0;
+            left: 0;
+
+            width: 100%;
+
+            background: var(--fondo);
+
+            border-top: 1px solid var(--borde);
+
+            padding: 5px;
+
+            z-index: 500;
+
+        }
+
+
+        /* =========================
+           MARCA NEXUS
+        ========================= */
+
+        #marcaNexus {
+
+            position: fixed;
+
+            bottom: 8px;
+
+            right: 12px;
+
+            font-size: 12px;
+
+            color: #888;
+
+            z-index: 1000;
+
+        }
+
+
+        /* =========================
+           CELULAR
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            body {
+
+                padding-bottom: 90px;
+
+            }
+
+
+            h1 {
+
+                font-size: 28px;
+
+                margin-top: 20px;
+
+            }
+
+
+            button {
+
+                font-size: 18px;
+
+                padding: 9px 14px;
+
+                margin: 6px;
+
+            }
+
+
+            .carpeta {
+
+                width: 88%;
+
+                box-sizing: border-box;
+
+                font-size: 18px;
+
+                padding: 14px;
+
+            }
+
+
+            .subcarpeta {
+
+                width: 88%;
+
+                box-sizing: border-box;
+
+                font-size: 18px;
+
+            }
+
+
+            .contenidoVentana {
+
+                width: 85%;
+
+                max-width: 350px;
+
+                box-sizing: border-box;
+
+                padding: 20px;
+
+            }
+
+
+            #fila {
+
+                flex-direction: column;
+
+                gap: 10px;
+
+            }
+
+
+            #fila input {
+
+                width: 100%;
+
+                box-sizing: border-box;
+
+                padding: 10px;
+
+                font-size: 16px;
+
+            }
+
+
+            #icono {
+
+                font-size: 50px;
+
+            }
+
+
+            #barraBusqueda input {
+
+                width: 85%;
+
+                box-sizing: border-box;
+
+                font-size: 16px;
+
+            }
+
+
+            #contenidoCarpeta {
+
+                width: 92%;
+
+                min-height: 350px;
+
+                font-size: 16px;
+
+            }
+
+
+            #listaAdjuntos {
+
+                width: 92%;
+
+            }
+
+
+            .adjunto img {
+
+                max-width: 100%;
+
+                height: auto;
+
+            }
+
+
+            .adjunto video {
+
+                max-width: 100%;
+
+                height: auto;
+
+            }
+
+
+            #barraInferior {
+
+                padding: 4px 0;
+
+            }
+
+
+            #barraInferior button {
+
+                font-size: 16px;
+
+                padding: 8px 12px;
+
+            }
+
+
+            #marcaNexus {
+
+                font-size: 10px;
+
+                bottom: 4px;
+
+                right: 6px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <h1>Organizador personal</h1>
+
+
+    <!-- =========================
+         BOTÓN CREAR
+    ========================= -->
+
+    <button onclick="abrirVentana()">
+        +
+    </button>
+
+
+    <!-- =========================
+         BOTÓN MODO OSCURO
+    ========================= -->
+
+    <button
+        id="botonTema"
+        onclick="cambiarTema()">
+
+        🌙
+
+    </button>
+
+
+    <!-- =========================
+         VENTANA NUEVA CARPETA
+    ========================= -->
+
+    <div id="ventana" class="ventana">
+
+        <div class="contenidoVentana">
+
+            <h2>Nueva carpeta</h2>
+
+            <div id="fila">
+
+                <input
+                    type="text"
+                    id="nombreCarpeta"
+                    placeholder="Inserte nombre">
+
+                <div id="icono">
+                    📁
+                </div>
+
+            </div>
+
+            <button onclick="crearCarpeta()">
+                Crear
+            </button>
+
+            <button onclick="cerrarVentana()">
+                Cancelar
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         VENTANA NUEVA SUBCARPETA
+    ========================= -->
+
+    <div
+        id="ventanaSubcarpeta"
+        class="ventana">
+
+        <div class="contenidoVentana">
+
+            <h2>Nueva subcarpeta</h2>
+
+            <div id="fila">
+
+                <input
+                    type="text"
+                    id="nombreSubcarpeta"
+                    placeholder="Inserte nombre">
+
+                <div id="icono">
+                    📂
+                </div>
+
+            </div>
+
+            <button onclick="crearSubcarpeta()">
+                Crear
+            </button>
+
+            <button
+                onclick="cerrarVentanaSubcarpeta()">
+
+                Cancelar
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ORDENAR
+    ========================= -->
+
+    <button onclick="mostrarOrdenar()">
+        ≡
+    </button>
+
+
+    <div
+        id="ventanaOrdenar"
+        class="ventana">
+
+        <div class="contenidoVentana">
+
+            <h2>Ordenar carpetas</h2>
+
+            <button onclick="ordenarPorFecha()">
+                📅 Fecha de creación
+            </button>
+
+            <button onclick="ordenarPorNombre()">
+                🔤 Nombre
+            </button>
+
+            <br>
+
+            <button onclick="cerrarOrdenar()">
+                Cerrar
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         BÚSQUEDA
+    ========================= -->
+
+    <button onclick="mostrarBusqueda()">
+        🔍
+    </button>
+
+
+    <div
+        id="barraBusqueda"
+        style="display:none; margin:15px;">
+
+        <input
+            type="text"
+            id="busqueda"
+            placeholder="Buscar..."
+            oninput="buscar()">
+
+    </div>
+
+
+    <!-- =========================
+         LISTA DE CARPETAS
+    ========================= -->
+
+    <div id="listaCarpetas"></div>
+
+
+    <!-- =========================
+         VISTA DE CARPETA
+    ========================= -->
+
+    <div id="vistaCarpeta">
+
+        <button onclick="cerrarCarpeta()">
+            ⬅ Volver
+        </button>
+
+        <h2 id="tituloCarpeta"></h2>
+
+
+        <!-- SUBCARPETAS -->
+
+        <div id="botonSubcarpetas">
+
+            <button
+                onclick="abrirVentanaSubcarpeta()">
+
+                📂 Subcarpetas
+
+            </button>
+
+        </div>
+
+
+        <div id="listaSubcarpetas"></div>
+
+
+        <!-- EDITOR -->
+
+        <div
+            id="contenidoCarpeta"
+            contenteditable="true"
+            spellcheck="true">
+
+        </div>
+
+
+        <h3>Adjuntos</h3>
+
+
+        <input
+            type="file"
+            id="selectorArchivos"
+            multiple
+            accept="image/*,video/*,.pdf"
+            onchange="agregarArchivos()">
+
+
+        <div id="listaAdjuntos"></div>
+
+    </div>
+
+
+    <!-- =========================
+         IMPORTAR / EXPORTAR
+    ========================= -->
+
+    <div id="barraInferior">
+
+        <button onclick="importarArchivo()">
+            📥 Importar
+        </button>
+
+        <button onclick="exportarArchivo()">
+            📤 Exportar
+        </button>
+
+        <input
+            type="file"
+            id="archivoImportar"
+            accept=".json"
+            style="display:none"
+            onchange="procesarImportacion()">
+
+    </div>
+
+
+    <!-- =========================
+         MARCA
+    ========================= -->
+
+    <div id="marcaNexus">
+
+        Made by Nexus • 2026 • Beta v0.1
+
+    </div>
+
+
+    <script>
+
+
+        /* =========================
+           DATOS
+        ========================= */
+
+        let carpetas = [];
+
+        let carpetaActual = null;
+
+        let elementoActual = null;
+
+        let esSubcarpetaActual = false;
+
+        let contadorCreacion = 0;
+
+
+        /* =========================
+           MODO OSCURO
+        ========================= */
+
+        function cambiarTema() {
+
+            document.body.classList.toggle("oscuro");
+
+            const oscuro =
+                document.body.classList.contains(
+                    "oscuro"
+                );
+
+            localStorage.setItem(
+                "temaOrganizador",
+                oscuro ? "oscuro" : "claro"
+            );
+
+            actualizarBotonTema();
+
+        }
+
+
+        function actualizarBotonTema() {
+
+            const boton =
+                document.getElementById(
+                    "botonTema"
+                );
+
+            if (
+                document.body.classList.contains(
+                    "oscuro"
+                )
+            ) {
+
+                boton.textContent = "☀️";
+
+            }
+
+            else {
+
+                boton.textContent = "🌙";
+
+            }
+
+        }
+
+
+        function cargarTema() {
+
+            const tema =
+                localStorage.getItem(
+                    "temaOrganizador"
+                );
+
+            if (tema === "oscuro") {
+
+                document.body.classList.add(
+                    "oscuro"
+                );
+
+            }
+
+            actualizarBotonTema();
+
+        }
+
+
+        /* =========================
+           GUARDADO LOCAL
+        ========================= */
+
+        function guardarLocalmente() {
+
+            guardarContenidoActual();
+
+            const datos = {
+
+                version: 2,
+
+                contadorCreacion:
+                    contadorCreacion,
+
+                carpetas:
+                    carpetas
+
+            };
+
+            try {
+
+                localStorage.setItem(
+
+                    "organizadorPersonal",
+
+                    JSON.stringify(datos)
+
+                );
+
+            }
+
+            catch(error) {
+
+                console.error(
+                    "No se pudo guardar localmente:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* =========================
+           CARGAR GUARDADO
+        ========================= */
+
+        function cargarGuardadoLocal() {
+
+            try {
+
+                const guardado =
+                    localStorage.getItem(
+                        "organizadorPersonal"
+                    );
+
+                if (!guardado) {
+                    return;
+                }
+
+                const datos =
+                    JSON.parse(guardado);
+
+                if (
+                    !datos.carpetas ||
+                    !Array.isArray(
+                        datos.carpetas
+                    )
+                ) {
+
+                    return;
+
+                }
+
+                carpetas =
+                    datos.carpetas;
+
+                contadorCreacion =
+                    datos.contadorCreacion ||
+                    carpetas.length;
+
+
+                carpetas.forEach(
+                    carpeta => {
+
+                        if (
+                            !carpeta.subcarpetas
+                        ) {
+
+                            carpeta.subcarpetas =
+                                [];
+
+                        }
+
+                        if (
+                            !carpeta.adjuntos
+                        ) {
+
+                            carpeta.adjuntos =
+                                [];
+
+                        }
+
+                        if (
+                            !carpeta.contenido
+                        ) {
+
+                            carpeta.contenido =
+                                "";
+
+                        }
+
+
+                        carpeta.subcarpetas.forEach(
+                            subcarpeta => {
+
+                                if (
+                                    !subcarpeta.adjuntos
+                                ) {
+
+                                    subcarpeta.adjuntos =
+                                        [];
+
+                                }
+
+                                if (
+                                    !subcarpeta.contenido
+                                ) {
+
+                                    subcarpeta.contenido =
+                                        "";
+
+                                }
+
+                            }
+                        );
+
+                    }
+                );
+
+
+                mostrarCarpetas();
+
+            }
+
+            catch(error) {
+
+                console.error(
+                    "No se pudo cargar el guardado:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* =========================
+           CREAR CARPETA
+        ========================= */
+
+        function abrirVentana() {
+
+            document
+                .getElementById("ventana")
+                .style.display = "flex";
+
+            document
+                .getElementById("nombreCarpeta")
+                .focus();
+
+        }
+
+
+        function cerrarVentana() {
+
+            document
+                .getElementById("ventana")
+                .style.display = "none";
+
+        }
+
+
+        function crearCarpeta() {
+
+            const nombre =
+                document
+                    .getElementById(
+                        "nombreCarpeta"
+                    )
+                    .value
+                    .trim();
+
+            if (nombre === "") {
+                return;
+            }
+
+
+            const carpeta = {
+
+                id:
+                    Date.now() +
+                    Math.random(),
+
+                nombre:
+                    nombre,
+
+                fecha:
+                    contadorCreacion++,
+
+                contenido:
+                    "",
+
+                adjuntos:
+                    [],
+
+                subcarpetas:
+                    []
+
+            };
+
+
+            carpetas.push(carpeta);
+
+
+            document
+                .getElementById(
+                    "nombreCarpeta"
+                )
+                .value = "";
+
+
+            cerrarVentana();
+
+            mostrarCarpetas();
+
+            guardarLocalmente();
+
+        }
+
+
+        /* =========================
+           MOSTRAR CARPETAS
+        ========================= */
+
+        function mostrarCarpetas() {
+
+            const lista =
+                document.getElementById(
+                    "listaCarpetas"
+                );
+
+            lista.innerHTML = "";
+
+
+            carpetas.forEach(
+                carpeta => {
+
+                    const elemento =
+                        document.createElement(
+                            "div"
+                        );
+
+                    elemento.className =
+                        "carpeta";
+
+
+                    const botonEliminar =
+                        document.createElement(
+                            "button"
+                        );
+
+                    botonEliminar.className =
+                        "botonEliminarCarpeta";
+
+                    botonEliminar.textContent =
+                        "🗑️";
+
+
+                    botonEliminar.onclick =
+                        function(e) {
+
+                            e.stopPropagation();
+
+                            if (
+                                confirm(
+                                    "¿Seguro que quieres eliminar esta carpeta y todo su contenido?"
+                                )
+                            ) {
+
+                                const indice =
+                                    carpetas.indexOf(
+                                        carpeta
+                                    );
+
+                                if (
+                                    indice !== -1
+                                ) {
+
+                                    carpetas.splice(
+                                        indice,
+                                        1
+                                    );
+
+                                }
+
+                                mostrarCarpetas();
+
+                                guardarLocalmente();
+
+                            }
+
+                        };
+
+
+                    elemento.appendChild(
+                        botonEliminar
+                    );
+
+
+                    const titulo =
+                        document.createElement(
+                            "div"
+                        );
+
+                    titulo.textContent =
+                        "📁 " +
+                        carpeta.nombre;
+
+                    titulo.style.fontWeight =
+                        "bold";
+
+
+                    elemento.appendChild(
+                        titulo
+                    );
+
+
+                    const informacion =
+                        document.createElement(
+                            "small"
+                        );
+
+
+                    const tieneContenido =
+                        carpeta.contenido &&
+                        carpeta.contenido.trim()
+                            !== "";
+
+
+                    const tieneSubcarpetas =
+                        carpeta.subcarpetas &&
+                        carpeta.subcarpetas.length
+                            > 0;
+
+
+                    const tieneAdjuntos =
+                        carpeta.adjuntos &&
+                        carpeta.adjuntos.length
+                            > 0;
+
+
+                    if (
+                        tieneContenido ||
+                        tieneSubcarpetas ||
+                        tieneAdjuntos
+                    ) {
+
+                        let detalles = [];
+
+
+                        if (tieneContenido) {
+
+                            detalles.push(
+                                "📝 Contenido"
+                            );
+
+                        }
+
+
+                        if (tieneSubcarpetas) {
+
+                            detalles.push(
+                                "📂 " +
+                                carpeta.subcarpetas.length +
+                                " subcarpeta(s)"
+                            );
+
+                        }
+
+
+                        if (tieneAdjuntos) {
+
+                            detalles.push(
+                                "📎 " +
+                                carpeta.adjuntos.length +
+                                " archivo(s)"
+                            );
+
+                        }
+
+
+                        informacion.textContent =
+                            detalles.join(
+                                " • "
+                            );
+
+                        informacion.style.color =
+                            "#888";
+
+                    }
+
+                    else {
+
+                        informacion.textContent =
+                            "Carpeta vacía";
+
+                        informacion.style.color =
+                            "#999";
+
+                    }
+
+
+                    informacion.style.display =
+                        "block";
+
+                    informacion.style.marginTop =
+                        "5px";
+
+                    informacion.style.fontSize =
+                        "13px";
+
+
+                    elemento.appendChild(
+                        informacion
+                    );
+
+
+                    elemento.onclick =
+                        function() {
+
+                            abrirCarpeta(
+                                carpeta
+                            );
+
+                        };
+
+
+                    lista.appendChild(
+                        elemento
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =========================
+           ABRIR CARPETA
+        ========================= */
+
+        function abrirCarpeta(carpeta) {
+
+            carpetaActual =
+                carpeta;
+
+            elementoActual =
+                carpeta;
+
+            esSubcarpetaActual =
+                false;
+
+
+            document
+                .getElementById(
+                    "tituloCarpeta"
+                )
+                .textContent =
+                    carpeta.nombre;
+
+
+            document
+                .getElementById(
+                    "contenidoCarpeta"
+                )
+                .innerHTML =
+                    carpeta.contenido;
+
+
+            document
+                .getElementById(
+                    "botonSubcarpetas"
+                )
+                .style.display =
+                    "block";
+
+
+            mostrarSubcarpetas();
+
+            mostrarAdjuntos();
+
+
+            document
+                .getElementById(
+                    "listaCarpetas"
+                )
+                .style.display =
+                    "none";
+
+
+            document
+                .getElementById(
+                    "vistaCarpeta"
+                )
+                .style.display =
+                    "block";
+
+        }
+
+
+        /* =========================
+           ABRIR SUBCARPETA
+        ========================= */
+
+        function abrirSubcarpeta(
+            subcarpeta
+        ) {
+
+            guardarContenidoActual();
+
+            elementoActual =
+                subcarpeta;
+
+            esSubcarpetaActual =
+                true;
+
+
+            document
+                .getElementById(
+                    "tituloCarpeta"
+                )
+                .textContent =
+                    subcarpeta.nombre;
+
+
+            document
+                .getElementById(
+                    "contenidoCarpeta"
+                )
+                .innerHTML =
+                    subcarpeta.contenido;
+
+
+            document
+                .getElementById(
+                    "botonSubcarpetas"
+                )
+                .style.display =
+                    "none";
+
+
+            document
+                .getElementById(
+                    "listaSubcarpetas"
+                )
+                .innerHTML =
+                    "";
+
+
+            mostrarAdjuntos();
+
+        }
+
+
+        /* =========================
+           MOSTRAR SUBCARPETAS
+        ========================= */
+
+        function mostrarSubcarpetas() {
+
+            const lista =
+                document.getElementById(
+                    "listaSubcarpetas"
+                );
+
+            lista.innerHTML = "";
+
+
+            if (!carpetaActual) {
+                return;
+            }
+
+
+            if (
+                !carpetaActual.subcarpetas
+            ) {
+
+                carpetaActual.subcarpetas =
+                    [];
+
+            }
+
+
+            carpetaActual.subcarpetas.forEach(
+                subcarpeta => {
+
+                    const elemento =
+                        document.createElement(
+                            "div"
+                        );
+
+                    elemento.className =
+                        "subcarpeta";
+
+
+                    elemento.textContent =
+                        "📂 " +
+                        subcarpeta.nombre;
+
+
+                    elemento.onclick =
+                        function() {
+
+                            abrirSubcarpeta(
+                                subcarpeta
+                            );
+
+                        };
+
+
+                    lista.appendChild(
+                        elemento
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =========================
+           CREAR SUBCARPETA
+        ========================= */
+
+        function abrirVentanaSubcarpeta() {
+
+            if (
+                !carpetaActual ||
+                esSubcarpetaActual
+            ) {
+
+                return;
+
+            }
+
+
+            document
+                .getElementById(
+                    "ventanaSubcarpeta"
+                )
+                .style.display =
+                    "flex";
+
+
+            document
+                .getElementById(
+                    "nombreSubcarpeta"
+                )
+                .focus();
+
+        }
+
+
+        function cerrarVentanaSubcarpeta() {
+
+            document
+                .getElementById(
+                    "ventanaSubcarpeta"
+                )
+                .style.display =
+                    "none";
+
+        }
+
+
+        function crearSubcarpeta() {
+
+            if (
+                !carpetaActual ||
+                esSubcarpetaActual
+            ) {
+
+                return;
+
+            }
+
+
+            const nombre =
+                document
+                    .getElementById(
+                        "nombreSubcarpeta"
+                    )
+                    .value
+                    .trim();
+
+
+            if (nombre === "") {
+                return;
+            }
+
+
+            if (
+                !carpetaActual.subcarpetas
+            ) {
+
+                carpetaActual.subcarpetas =
+                    [];
+
+            }
+
+
+            const subcarpeta = {
+
+                id:
+                    Date.now() +
+                    Math.random(),
+
+                nombre:
+                    nombre,
+
+                fecha:
+                    contadorCreacion++,
+
+                contenido:
+                    "",
+
+                adjuntos:
+                    []
+
+            };
+
+
+            carpetaActual
+                .subcarpetas
+                .push(
+                    subcarpeta
+                );
+
+
+            document
+                .getElementById(
+                    "nombreSubcarpeta"
+                )
+                .value =
+                    "";
+
+
+            cerrarVentanaSubcarpeta();
+
+            mostrarSubcarpetas();
+
+            guardarLocalmente();
+
+        }
+
+
+        /* =========================
+           CERRAR CARPETA
+        ========================= */
+
+        function cerrarCarpeta() {
+
+            guardarContenidoActual();
+
+            guardarLocalmente();
+
+
+            document
+                .getElementById(
+                    "vistaCarpeta"
+                )
+                .style.display =
+                    "none";
+
+
+            document
+                .getElementById(
+                    "listaCarpetas"
+                )
+                .style.display =
+                    "block";
+
+
+            document
+                .getElementById(
+                    "botonSubcarpetas"
+                )
+                .style.display =
+                    "block";
+
+
+            document
+                .getElementById(
+                    "listaSubcarpetas"
+                )
+                .innerHTML =
+                    "";
+
+
+            carpetaActual =
+                null;
+
+            elementoActual =
+                null;
+
+            esSubcarpetaActual =
+                false;
+
+        }
+
+
+        /* =========================
+           GUARDAR CONTENIDO
+        ========================= */
+
+        function guardarContenidoActual() {
+
+            if (!elementoActual) {
+                return;
+            }
+
+
+            elementoActual.contenido =
+                document
+                    .getElementById(
+                        "contenidoCarpeta"
+                    )
+                    .innerHTML;
+
+        }
+
+
+        /* =========================
+           EDITOR
+        ========================= */
+
+        const editor =
+            document.getElementById(
+                "contenidoCarpeta"
+            );
+
+
+        editor.addEventListener(
+            "input",
+            function() {
+
+                guardarContenidoActual();
+
+                guardarLocalmenteSinRecursion();
+
+            }
+        );
+
+
+        editor.addEventListener(
+            "keydown",
+            function(e) {
+
+                if (
+                    e.key === " " ||
+                    e.key === "Enter"
+                ) {
+
+                    setTimeout(
+                        convertirEnlaces,
+                        0
+                    );
+
+                }
+
+            }
+        );
+
+
+        function guardarLocalmenteSinRecursion() {
+
+            const datos = {
+
+                version: 2,
+
+                contadorCreacion:
+                    contadorCreacion,
+
+                carpetas:
+                    carpetas
+
+            };
+
+
+            try {
+
+                localStorage.setItem(
+                    "organizadorPersonal",
+                    JSON.stringify(datos)
+                );
+
+            }
+
+            catch(error) {
+
+                console.error(
+                    "Error guardando:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* =========================
+           CONVERTIR ENLACES
+        ========================= */
+
+        function convertirEnlaces() {
+
+            const editor =
+                document.getElementById(
+                    "contenidoCarpeta"
+                );
+
+
+            const walker =
+                document.createTreeWalker(
+                    editor,
+                    NodeFilter.SHOW_TEXT
+                );
+
+
+            const nodos = [];
+
+
+            while (
+                walker.nextNode()
+            ) {
+
+                nodos.push(
+                    walker.currentNode
+                );
+
+            }
+
+
+            nodos.forEach(
+                nodo => {
+
+                    if (
+                        nodo.parentElement &&
+                        nodo.parentElement.tagName ===
+                        "A"
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const texto =
+                        nodo.textContent;
+
+
+                    const regex =
+                        /https?:\/\/[^\s]+/gi;
+
+
+                    if (
+                        !regex.test(texto)
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    regex.lastIndex =
+                        0;
+
+
+                    const fragmento =
+                        document
+                            .createDocumentFragment();
+
+
+                    let ultimaPosicion =
+                        0;
+
+
+                    texto.replace(
+                        regex,
+                        function(
+                            url,
+                            posicion
+                        ) {
+
+                            fragmento.appendChild(
+                                document.createTextNode(
+                                    texto.substring(
+                                        ultimaPosicion,
+                                        posicion
+                                    )
+                                )
+                            );
+
+
+                            const enlace =
+                                document.createElement(
+                                    "a"
+                                );
+
+
+                            enlace.href =
+                                url;
+
+                            enlace.target =
+                                "_blank";
+
+                            enlace.rel =
+                                "noopener noreferrer";
+
+                            enlace.textContent =
+                                url;
+
+
+                            fragmento.appendChild(
+                                enlace
+                            );
+
+
+                            ultimaPosicion =
+                                posicion +
+                                url.length;
+
+                        }
+                    );
+
+
+                    fragmento.appendChild(
+                        document.createTextNode(
+                            texto.substring(
+                                ultimaPosicion
+                            )
+                        )
+                    );
+
+
+                    nodo.parentNode.replaceChild(
+                        fragmento,
+                        nodo
+                    );
+
+                }
+            );
+
+
+            guardarContenidoActual();
+
+            guardarLocalmenteSinRecursion();
+
+        }
+
+
+        /* =========================
+           BÚSQUEDA
+        ========================= */
+
+        function mostrarBusqueda() {
+
+            const barra =
+                document.getElementById(
+                    "barraBusqueda"
+                );
+
+
+            if (
+                barra.style.display ===
+                "none"
+            ) {
+
+                barra.style.display =
+                    "block";
+
+
+                document
+                    .getElementById(
+                        "busqueda"
+                    )
+                    .focus();
+
+            }
+
+            else {
+
+                barra.style.display =
+                    "none";
+
+
+                document
+                    .getElementById(
+                        "busqueda"
+                    )
+                    .value =
+                        "";
+
+
+                buscar();
+
+            }
+
+        }
+
+
+        function buscar() {
+
+            const texto =
+                document
+                    .getElementById(
+                        "busqueda"
+                    )
+                    .value
+                    .toLowerCase();
+
+
+            const elementos =
+                document
+                    .getElementById(
+                        "listaCarpetas"
+                    )
+                    .children;
+
+
+            for (
+                let i = 0;
+                i < elementos.length;
+                i++
+            ) {
+
+                const carpeta =
+                    carpetas[i];
+
+
+                if (
+                    carpeta.nombre
+                        .toLowerCase()
+                        .includes(texto)
+                ) {
+
+                    elementos[i]
+                        .style
+                        .display =
+                            "block";
+
+                }
+
+                else {
+
+                    elementos[i]
+                        .style
+                        .display =
+                            "none";
+
+                }
+
+            }
+
+        }
+
+
+        /* =========================
+           ORDENAR
+        ========================= */
+
+        function mostrarOrdenar() {
+
+            document
+                .getElementById(
+                    "ventanaOrdenar"
+                )
+                .style.display =
+                    "flex";
+
+        }
+
+
+        function cerrarOrdenar() {
+
+            document
+                .getElementById(
+                    "ventanaOrdenar"
+                )
+                .style.display =
+                    "none";
+
+        }
+
+
+        function ordenarPorNombre() {
+
+            carpetas.sort(
+                (a, b) =>
+                    a.nombre.localeCompare(
+                        b.nombre
+                    )
+            );
+
+
+            mostrarCarpetas();
+
+            guardarLocalmente();
+
+            cerrarOrdenar();
+
+        }
+
+
+        function ordenarPorFecha() {
+
+            carpetas.sort(
+                (a, b) =>
+                    a.fecha -
+                    b.fecha
+            );
+
+
+            mostrarCarpetas();
+
+            guardarLocalmente();
+
+            cerrarOrdenar();
+
+        }
+
+
+        /* =========================
+           ADJUNTOS
+        ========================= */
+
+        function agregarArchivos() {
+
+            if (!elementoActual) {
+                return;
+            }
+
+
+            const selector =
+                document.getElementById(
+                    "selectorArchivos"
+                );
+
+
+            const archivos =
+                Array.from(
+                    selector.files
+                );
+
+
+            archivos.forEach(
+                archivo => {
+
+                    const lector =
+                        new FileReader();
+
+
+                    lector.onload =
+                        function(e) {
+
+                            if (
+                                !elementoActual.adjuntos
+                            ) {
+
+                                elementoActual.adjuntos =
+                                    [];
+
+                            }
+
+
+                            elementoActual
+                                .adjuntos
+                                .push({
+
+                                    nombre:
+                                        archivo.name,
+
+                                    tipo:
+                                        archivo.type,
+
+                                    datos:
+                                        e.target.result
+
+                                });
+
+
+                            mostrarAdjuntos();
+
+                            guardarLocalmente();
+
+                        };
+
+
+                    lector.readAsDataURL(
+                        archivo
+                    );
+
+                }
+            );
+
+
+            selector.value = "";
+
+        }
+
+
+        function mostrarAdjuntos() {
+
+            const lista =
+                document.getElementById(
+                    "listaAdjuntos"
+                );
+
+
+            lista.innerHTML = "";
+
+
+            if (!elementoActual) {
+                return;
+            }
+
+
+            if (
+                !elementoActual.adjuntos
+            ) {
+
+                elementoActual.adjuntos =
+                    [];
+
+            }
+
+
+            elementoActual
+                .adjuntos
+                .forEach(
+                    (archivo, indice) => {
+
+                        const contenedor =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        contenedor.className =
+                            "adjunto";
+
+
+                        const nombre =
+                            document.createElement(
+                                "p"
+                            );
+
+
+                        nombre.textContent =
+                            "📎 " +
+                            archivo.nombre;
+
+
+                        contenedor.appendChild(
+                            nombre
+                        );
+
+
+                        if (
+                            archivo.tipo
+                                .startsWith(
+                                    "image/"
+                                )
+                        ) {
+
+                            const imagen =
+                                document.createElement(
+                                    "img"
+                                );
+
+
+                            imagen.src =
+                                archivo.datos;
+
+
+                            contenedor.appendChild(
+                                imagen
+                            );
+
+                        }
+
+
+                        else if (
+                            archivo.tipo
+                                .startsWith(
+                                    "video/"
+                                )
+                        ) {
+
+                            const video =
+                                document.createElement(
+                                    "video"
+                                );
+
+
+                            video.src =
+                                archivo.datos;
+
+                            video.controls =
+                                true;
+
+
+                            contenedor.appendChild(
+                                video
+                            );
+
+                        }
+
+
+                        else if (
+                            archivo.tipo ===
+                            "application/pdf"
+                        ) {
+
+                            const enlace =
+                                document.createElement(
+                                    "a"
+                                );
+
+
+                            enlace.href =
+                                archivo.datos;
+
+                            enlace.target =
+                                "_blank";
+
+                            enlace.textContent =
+                                "📄 Abrir PDF";
+
+
+                            contenedor.appendChild(
+                                enlace
+                            );
+
+                        }
+
+
+                        const eliminar =
+                            document.createElement(
+                                "button"
+                            );
+
+
+                        eliminar.textContent =
+                            "🗑️ Eliminar";
+
+
+                        eliminar.onclick =
+                            function() {
+
+                                elementoActual
+                                    .adjuntos
+                                    .splice(
+                                        indice,
+                                        1
+                                    );
+
+
+                                mostrarAdjuntos();
+
+                                guardarLocalmente();
+
+                            };
+
+
+                        contenedor.appendChild(
+                            eliminar
+                        );
+
+
+                        lista.appendChild(
+                            contenedor
+                        );
+
+                    }
+                );
+
+        }
+
+
+        /* =========================
+           EXPORTAR
+        ========================= */
+
+        function exportarArchivo() {
+
+            guardarContenidoActual();
+
+            guardarLocalmente();
+
+
+            const datos = {
+
+                version: 2,
+
+                contadorCreacion:
+                    contadorCreacion,
+
+                carpetas:
+                    carpetas
+
+            };
+
+
+            const texto =
+                JSON.stringify(
+                    datos,
+                    null,
+                    2
+                );
+
+
+            const archivo =
+                new Blob(
+                    [texto],
+                    {
+                        type:
+                            "application/json"
+                    }
+                );
+
+
+            const url =
+                URL.createObjectURL(
+                    archivo
+                );
+
+
+            const enlace =
+                document.createElement(
+                    "a"
+                );
+
+
+            enlace.href =
+                url;
+
+
+            enlace.download =
+                "organizador-personal.json";
+
+
+            enlace.click();
+
+
+            URL.revokeObjectURL(
+                url
+            );
+
+        }
+
+
+        /* =========================
+           IMPORTAR
+        ========================= */
+
+        function importarArchivo() {
+
+            document
+                .getElementById(
+                    "archivoImportar"
+                )
+                .click();
+
+        }
+
+
+        function procesarImportacion() {
+
+            const selector =
+                document.getElementById(
+                    "archivoImportar"
+                );
+
+
+            const archivo =
+                selector.files[0];
+
+
+            if (!archivo) {
+                return;
+            }
+
+
+            const lector =
+                new FileReader();
+
+
+            lector.onload =
+                function(e) {
+
+                    try {
+
+                        const datos =
+                            JSON.parse(
+                                e.target.result
+                            );
+
+
+                        if (
+                            !datos.carpetas ||
+                            !Array.isArray(
+                                datos.carpetas
+                            )
+                        ) {
+
+                            alert(
+                                "El archivo no es válido."
+                            );
+
+                            return;
+
+                        }
+
+
+                        carpetas =
+                            datos.carpetas;
+
+
+                        carpetas.forEach(
+                            carpeta => {
+
+                                if (
+                                    !carpeta.subcarpetas
+                                ) {
+
+                                    carpeta.subcarpetas =
+                                        [];
+
+                                }
+
+
+                                if (
+                                    !carpeta.adjuntos
+                                ) {
+
+                                    carpeta.adjuntos =
+                                        [];
+
+                                }
+
+
+                                if (
+                                    !carpeta.contenido
+                                ) {
+
+                                    carpeta.contenido =
+                                        "";
+
+                                }
+
+
+                                carpeta
+                                    .subcarpetas
+                                    .forEach(
+                                        subcarpeta => {
+
+                                            if (
+                                                !subcarpeta.adjuntos
+                                            ) {
+
+                                                subcarpeta.adjuntos =
+                                                    [];
+
+                                            }
+
+
+                                            if (
+                                                !subcarpeta.contenido
+                                            ) {
+
+                                                subcarpeta.contenido =
+                                                    "";
+
+                                            }
+
+                                        }
+                                    );
+
+                            }
+                        );
+
+
+                        contadorCreacion =
+                            datos.contadorCreacion ||
+                            carpetas.length;
+
+
+                        mostrarCarpetas();
+
+                        guardarLocalmente();
+
+
+                        alert(
+                            "Organizador importado correctamente."
+                        );
+
+                    }
+
+                    catch(error) {
+
+                        alert(
+                            "No se pudo leer el archivo."
+                        );
+
+                    }
+
+                };
+
+
+            lector.readAsText(
+                archivo
+            );
+
+
+            selector.value = "";
+
+        }
+
+
+        /* =========================
+           CERRAR AL SALIR
+        ========================= */
+
+        window.addEventListener(
+            "beforeunload",
+            function() {
+
+                guardarContenidoActual();
+
+                guardarLocalmenteSinRecursion();
+
+            }
+        );
+
+
+        /* =========================
+           CERRAR VENTANAS
+        ========================= */
+
+        document
+            .querySelectorAll(".ventana")
+            .forEach(
+                ventana => {
+
+                    ventana.addEventListener(
+                        "click",
+                        function(e) {
+
+                            if (
+                                e.target ===
+                                ventana
+                            ) {
+
+                                ventana.style.display =
+                                    "none";
+
+                            }
+
+                        }
+                    );
+
+                }
+            );
+
+
+        /* =========================
+           ATAJOS DE TECLADO
+        ========================= */
+
+        document.addEventListener(
+            "keydown",
+            function(e) {
+
+                /* ESC */
+
+                if (e.key === "Escape") {
+
+                    document
+                        .querySelectorAll(
+                            ".ventana"
+                        )
+                        .forEach(
+                            ventana => {
+
+                                ventana.style.display =
+                                    "none";
+
+                            }
+                        );
+
+                }
+
+
+                /* ENTER CARPETA */
+
+                if (
+                    e.key === "Enter" &&
+                    document.activeElement.id ===
+                    "nombreCarpeta"
+                ) {
+
+                    crearCarpeta();
+
+                }
+
+
+                /* ENTER SUBCARPETA */
+
+                if (
+                    e.key === "Enter" &&
+                    document.activeElement.id ===
+                    "nombreSubcarpeta"
+                ) {
+
+                    crearSubcarpeta();
+
+                }
+
+            }
+        );
+
+
+        /* =========================
+           INICIO
+        ========================= */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function() {
+
+                cargarTema();
+
+                cargarGuardadoLocal();
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>
