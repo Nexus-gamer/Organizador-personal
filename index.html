@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
+    <!-- Le dice al navegador que use correctamente las tildes y la ñ. -->
     <meta charset="UTF-8">
-
+    <!-- Hace que la página se adapte al ancho de celulares y tabletas. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Nombre que aparece en la pestaña del navegador. -->
     <title>Organizador personal</title>
 
     <style>
-
-        /* =========================
-           VARIABLES DE COLORES
-        ========================= */
-
+        /* =========================================================
+           1. COLORES GENERALES
+           Cambiamos estas variables para cambiar el aspecto de toda
+           la aplicación sin tener que modificar cada elemento.
+           ========================================================= */
         :root {
             --fondo: #ffffff;
             --texto: #222222;
@@ -26,8 +27,8 @@
             --adjunto: #ffffff;
         }
 
+        /* Estos colores reemplazan los anteriores cuando se activa el modo oscuro. */
         body.oscuro {
-
             --fondo: #181818;
             --texto: #eeeeee;
             --boton: #303030;
@@ -38,2959 +39,1276 @@
             --ventana: #242424;
             --editor: #202020;
             --adjunto: #252525;
-
         }
 
-
-        /* =========================
-           CUERPO
-        ========================= */
-
+        /* Ajustes generales de toda la página. */
         body {
-
             margin: 0;
+            padding-bottom: 100px; /* Deja espacio para la barra inferior fija. */
             font-family: Arial, sans-serif;
             text-align: center;
-            padding-bottom: 100px;
-
             background: var(--fondo);
             color: var(--texto);
-
-            transition:
-                background 0.3s,
-                color 0.3s;
-
+            transition: background 0.3s, color 0.3s;
         }
 
+        h1 { margin-top: 30px; }
 
-        h1 {
-
-            margin-top: 30px;
-
-        }
-
-
-        /* =========================
-           BOTONES
-        ========================= */
-
+        /* Estilo común para los botones normales. */
         button {
-
             font-size: 20px;
             margin: 10px;
             padding: 10px 18px;
             cursor: pointer;
-
             border: none;
             border-radius: 10px;
-
             background: var(--boton);
             color: var(--botonTexto);
-
-            box-shadow:
-                0 3px 6px rgba(0,0,0,0.2);
-
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
             transition: 0.2s;
-
         }
+        button:hover { transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0,0,0,0.25); }
+        button:active { transform: translateY(1px); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        #botonTema { font-size: 20px; }
 
-
-        button:hover {
-
-            transform: translateY(-2px);
-
-            box-shadow:
-                0 5px 10px rgba(0,0,0,0.25);
-
-        }
-
-
-        button:active {
-
-            transform: translateY(1px);
-
-            box-shadow:
-                0 2px 4px rgba(0,0,0,0.2);
-
-        }
-
-
-        /* =========================
-           BOTÓN MODO OSCURO
-        ========================= */
-
-        #botonTema {
-
-            font-size: 20px;
-
-        }
-
-
-        /* =========================
-           VENTANAS
-        ========================= */
-
+        /* Ventanas emergentes para crear carpetas y ordenar. */
         .ventana {
-
             display: none;
-
             position: fixed;
-
-            top: 0;
-            left: 0;
-
+            inset: 0;
             width: 100%;
             height: 100%;
-
-            background:
-                rgba(0,0,0,0.5);
-
+            box-sizing: border-box;
+            background: rgba(0,0,0,0.5);
             justify-content: center;
             align-items: center;
-
-            z-index: 1000;
-
+            z-index: 2000;
         }
-
-
         .contenidoVentana {
-
             background: var(--ventana);
-
             color: var(--texto);
-
             border-radius: 15px;
-
-            box-shadow:
-                0 10px 30px rgba(0,0,0,0.3);
-
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             padding: 25px;
-
-            animation:
-                aparecerVentana 0.2s ease;
-
+            max-width: 90%;
+            animation: aparecerVentana 0.2s ease;
         }
-
-
         @keyframes aparecerVentana {
-
-            from {
-
-                transform: scale(0.9);
-                opacity: 0;
-
-            }
-
-            to {
-
-                transform: scale(1);
-                opacity: 1;
-
-            }
-
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
+        #fila { display: flex; align-items: center; gap: 20px; margin: 20px 0; }
+        #icono { font-size: 60px; }
 
-
-        #fila {
-
-            display: flex;
-            align-items: center;
-
-            gap: 20px;
-
-            margin: 20px 0;
-
-        }
-
-
-        #icono {
-
-            font-size: 60px;
-
-        }
-
-
-        input {
-
+        /* Apariencia de campos para escribir. */
+        input, select, textarea {
             background: var(--fondo);
             color: var(--texto);
-
             border: 1px solid var(--borde);
-
             border-radius: 8px;
-
-        }
-
-
-        /* =========================
-           CARPETAS
-        ========================= */
-
-        #listaCarpetas {
-
-            margin-top: 20px;
-
-        }
-
-
-        .carpeta {
-
-            width: 80%;
-
-            margin: 12px auto;
-
-            padding: 16px;
-
-            font-size: 21px;
-
-            cursor: pointer;
-
-            border: none;
-
-            border-radius: 12px;
-
-            background: var(--carpeta);
-
-            color: var(--texto);
-
-            text-align: left;
-
-            box-shadow:
-                0 3px 7px rgba(0,0,0,0.15);
-
-            transition: 0.2s;
-
-            animation:
-                aparecerCarpeta 0.3s ease;
-
-            position: relative;
-
-        }
-
-
-        .carpeta:hover {
-
-            transform: translateY(-3px);
-
-            box-shadow:
-                0 6px 12px rgba(0,0,0,0.2);
-
-            background: var(--carpetaHover);
-
-        }
-
-
-        @keyframes aparecerCarpeta {
-
-            from {
-
-                opacity: 0;
-                transform: translateY(10px);
-
-            }
-
-            to {
-
-                opacity: 1;
-                transform: translateY(0);
-
-            }
-
-        }
-
-
-        /* =========================
-           BOTÓN ELIMINAR CARPETA
-        ========================= */
-
-        .botonEliminarCarpeta {
-
-            float: right;
-
-            margin: 0;
-
-            padding: 6px 10px;
-
-            font-size: 16px;
-
-            background: #d9534f;
-
-            color: white;
-
-            box-shadow: none;
-
-        }
-
-
-        .botonEliminarCarpeta:hover {
-
-            background: #c9302c;
-
-        }
-
-
-        /* =========================
-           SUBCARPETAS
-        ========================= */
-
-        #listaSubcarpetas {
-
-            width: 90%;
-
-            margin: 20px auto;
-
-        }
-
-
-        .subcarpeta {
-
-            width: 90%;
-
-            margin: 10px auto;
-
-            padding: 12px;
-
-            font-size: 20px;
-
-            cursor: pointer;
-
-            border: 1px solid var(--borde);
-
-            border-radius: 8px;
-
-            background: var(--carpeta);
-
-            color: var(--texto);
-
-            text-align: left;
-
-            transition: 0.2s;
-
-            position: relative;
-
-        }
-
-
-        .subcarpeta:hover {
-
-            background: var(--carpetaHover);
-
-            transform: translateY(-2px);
-
-        }
-
-
-        /* =========================
-           VISTA CARPETA
-        ========================= */
-
-        #vistaCarpeta {
-
-            display: none;
-
-            margin-top: 20px;
-
-        }
-
-
-        #contenidoCarpeta {
-
-            width: 90%;
-
-            min-height: 400px;
-
-            margin: 20px auto;
-
-            padding: 10px;
-
-            box-sizing: border-box;
-
-            text-align: left;
-
             font-family: Arial, sans-serif;
-
-            font-size: 16px;
-
-            background: var(--editor);
-
-            color: var(--texto);
-
-            border: 1px solid var(--borde);
-
-            border-radius: 12px;
-
-            box-shadow:
-                0 3px 10px rgba(0,0,0,0.12);
-
-            overflow: auto;
-
-            transition: 0.2s;
-
-            line-height: 1.5;
-
         }
+        input { padding: 8px; }
 
-
-        #contenidoCarpeta:focus {
-
-            outline: none;
-
-            border-color: #888;
-
-            box-shadow:
-                0 0 0 3px rgba(128,128,128,0.15);
-
-        }
-
-
-        #contenidoCarpeta:empty::before {
-
-            content: "Escribe aquí...";
-
-            color: #999;
-
-            pointer-events: none;
-
-        }
-
-
-        #contenidoCarpeta a {
-
-            color: #4da6ff;
-
-            text-decoration: underline;
-
+        /* Lista de carpetas principales. */
+        #listaCarpetas { margin-top: 20px; }
+        .carpeta {
+            width: 80%;
+            box-sizing: border-box;
+            margin: 12px auto;
+            padding: 16px;
+            font-size: 21px;
             cursor: pointer;
-
-        }
-
-
-        #contenidoCarpeta a:hover {
-
-            color: #80c1ff;
-
-        }
-
-
-        /* =========================
-           ADJUNTOS
-        ========================= */
-
-        #listaAdjuntos {
-
-            width: 90%;
-
-            margin: 20px auto;
-
-            text-align: left;
-
-        }
-
-
-        .adjunto {
-
-            border: 1px solid var(--borde);
-
-            padding: 10px;
-
-            margin: 10px 0;
-
-            border-radius: 8px;
-
-            background: var(--adjunto);
-
+            border-radius: 12px;
+            background: var(--carpeta);
             color: var(--texto);
-
-        }
-
-
-        .adjunto img {
-
-            max-width: 300px;
-
-            max-height: 200px;
-
-        }
-
-
-        .adjunto video {
-
-            max-width: 400px;
-
-            max-height: 250px;
-
-        }
-
-
-        /* =========================
-           BÚSQUEDA
-        ========================= */
-
-        #barraBusqueda input {
-
-            width: 60%;
-
-            max-width: 500px;
-
-            padding: 12px 16px;
-
-            font-size: 18px;
-
-            border: 1px solid var(--borde);
-
-            border-radius: 10px;
-
-            outline: none;
-
+            text-align: left;
+            box-shadow: 0 3px 7px rgba(0,0,0,0.15);
             transition: 0.2s;
-
+            animation: aparecerCarpeta 0.3s ease;
         }
-
-
-        #barraBusqueda input:focus {
-
-            border-color: #888;
-
-            box-shadow:
-                0 0 6px rgba(0,0,0,0.2);
-
+        .carpeta:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.2); background: var(--carpetaHover); }
+        @keyframes aparecerCarpeta {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
+        .botonEliminarCarpeta {
+            float: right;
+            margin: 0;
+            padding: 6px 10px;
+            font-size: 16px;
+            background: #d9534f;
+            color: white;
+            box-shadow: none;
+        }
+        .botonEliminarCarpeta:hover { background: #c9302c; }
 
+        /* Subcarpetas dentro de una carpeta principal. */
+        #listaSubcarpetas { width: 90%; margin: 20px auto; }
+        .subcarpeta {
+            width: 90%;
+            box-sizing: border-box;
+            margin: 10px auto;
+            padding: 12px;
+            font-size: 20px;
+            cursor: pointer;
+            border: 1px solid var(--borde);
+            border-radius: 8px;
+            background: var(--carpeta);
+            color: var(--texto);
+            text-align: left;
+            transition: 0.2s;
+        }
+        .subcarpeta:hover { background: var(--carpetaHover); transform: translateY(-2px); }
+        #vistaCarpeta { display: none; position: relative; min-height: 700px; margin-top: 20px; padding-bottom: 30px; box-sizing: border-box; }
 
-        /* =========================
-           BARRA INFERIOR
-        ========================= */
+        /* Editor donde se escribe el contenido de una carpeta o subcarpeta. */
+        #contenidoCarpeta {
+            width: 90%;
+            min-height: 400px;
+            margin: 20px auto;
+            padding: 10px;
+            box-sizing: border-box;
+            text-align: left;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            background: var(--editor);
+            color: var(--texto);
+            border: 1px solid var(--borde);
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+            transition: 0.2s;
+            line-height: 1.5;
+            overflow: auto;
+        }
+        #contenidoCarpeta:focus { outline: none; border-color: #888; box-shadow: 0 0 0 3px rgba(128,128,128,0.15); }
+        #contenidoCarpeta:empty::before { content: "Escribe aquí..."; color: #999; pointer-events: none; }
+        #contenidoCarpeta a { color: #4da6ff; text-decoration: underline; cursor: pointer; }
+        #contenidoCarpeta a:hover { color: #80c1ff; }
 
+        /* Archivos que se adjuntan a una carpeta o subcarpeta. */
+        #listaAdjuntos { width: 90%; margin: 20px auto; text-align: left; }
+        .adjunto { border: 1px solid var(--borde); padding: 10px; margin: 10px 0; border-radius: 8px; background: var(--adjunto); color: var(--texto); overflow-wrap: anywhere; }
+        .adjunto img { max-width: 300px; max-height: 200px; }
+        .adjunto video { max-width: 400px; max-height: 250px; }
+        #barraBusqueda input { width: 60%; max-width: 500px; padding: 12px 16px; font-size: 18px; border: 1px solid var(--borde); border-radius: 10px; outline: none; transition: 0.2s; }
+        #barraBusqueda input:focus { border-color: #888; box-shadow: 0 0 6px rgba(0,0,0,0.2); }
+
+        /* Barra de importar y exportar, fija abajo. */
         #barraInferior {
-
             position: fixed;
-
             bottom: 0;
             left: 0;
-
             width: 100%;
-
+            box-sizing: border-box;
             background: var(--fondo);
-
             border-top: 1px solid var(--borde);
-
             padding: 5px;
-
             z-index: 500;
-
         }
+        #marcaNexus { position: fixed; bottom: 8px; right: 12px; font-size: 12px; color: #888; z-index: 1000; pointer-events: none; }
 
+        /* =========================================================
+           NOTAS ADHESIVAS
+           Ahora la zona invisible de notas cubre TODA la carpeta abierta,
+           desde arriba hasta abajo. Así puedes colocar notas sobre el editor,
+           los adjuntos o cualquier otro lugar de esa carpeta.
+           Cada carpeta y subcarpeta conserva sus propias notas.
+           ========================================================= */
+        #zonaNotas {
+            position: absolute;          /* Se estira dentro de toda la carpeta abierta. */
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100%;
+            margin: 0;
+            border: none;
+            border-radius: 0;
+            background: transparent;
+            overflow: visible;
+            text-align: left;
+            pointer-events: none;        /* Los clics pasan a los botones y al editor de debajo. */
+            z-index: 20;                 /* Las notas aparecen por encima del contenido. */
+        }
+        #zonaNotas::before {
+            content: none;               /* Ya no mostramos el antiguo cuadro de notas. */
+        }
+        .nota {
+            position: absolute;
+            pointer-events: auto;        /* La nota sí recibe clics y se puede arrastrar. */
+            width: 190px;
+            min-height: 135px;
+            box-sizing: border-box;
+            padding: 0 10px 10px;
+            border-radius: 3px 3px 8px 8px;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.2);
+            color: #222;
+            text-align: left;
+            z-index: 2;
+        }
+        .nota-amarilla { background: #fff2a8; }
+        .nota-verde { background: #c9f7c5; }
+        .nota-azul { background: #c8e8ff; }
+        .nota-rosa { background: #ffd1e3; }
+        .barraNota {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4px;
+            margin: 0 -10px 7px;
+            padding: 4px 6px;
+            background: rgba(0,0,0,0.08);
+            cursor: grab; /* Esta barra es el lugar desde donde se mueve la nota. */
+            user-select: none;
+            touch-action: none;
+        }
+        .barraNota:active { cursor: grabbing; }
+        .barraNota button { margin: 0; padding: 3px 6px; font-size: 14px; box-shadow: none; background: rgba(255,255,255,0.65); color: #222; }
+        .colorNota { width: 70px; padding: 2px; font-size: 12px; background: #fff; color: #222; }
+        .textoNota {
+            min-height: 85px;
+            outline: none;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            font-size: 14px;
+        }
+        .textoNota:empty::before { content: "Escribe tu nota..."; color: #777; }
+        .notaMinimizada {
+            position: absolute;
+            pointer-events: auto;        /* El círculo también se puede pulsar y mover. */
+            width: 42px;
+            height: 42px;
+            padding: 0;
+            margin: 0;
+            border: 2px solid #d2aa00;
+            border-radius: 50%;
+            background: #ffdf48;
+            color: #3b3000;
+            font-size: 21px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+            z-index: 3;
+        }
+        .notaMinimizada:hover { background: #ffe878; }
 
-        /* =========================
-           MARCA NEXUS
-        ========================= */
-
-        #marcaNexus {
-
+        /* =========================================================
+           CALCULADORA FLOTANTE
+           Está fija a la derecha y puede moverse arriba o abajo.
+           ========================================================= */
+        #calculadora {
             position: fixed;
-
-            bottom: 8px;
-
             right: 12px;
-
-            font-size: 12px;
-
-            color: #888;
-
-            z-index: 1000;
-
+            top: 180px;
+            width: 245px;
+            padding: 10px;
+            box-sizing: border-box;
+            background: #20252d;
+            color: white;
+            border: 1px solid #4b5563;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+            z-index: 1500;
+            text-align: center;
         }
+        #barraCalculadora {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 3px 5px 8px;
+            cursor: grab;
+            user-select: none;
+            touch-action: none;
+            font-weight: bold;
+        }
+        #barraCalculadora:active { cursor: grabbing; }
+        #barraCalculadora small { font-size: 11px; color: #cbd5e1; font-weight: normal; }
+        #pantallaCalculadora {
+            width: 100%;
+            box-sizing: border-box;
+            min-height: 58px;
+            padding: 10px 8px;
+            margin: 0 0 8px;
+            border: 1px solid #64748b;
+            border-radius: 8px;
+            background: #101419;
+            color: #f8fafc;
+            font-size: 23px;
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+        #rejillaCalculadora { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+        #rejillaCalculadora button {
+            min-width: 0;
+            margin: 0;
+            padding: 10px 2px;
+            border-radius: 8px;
+            background: #374151;
+            color: white;
+            box-shadow: none;
+            font-size: 16px;
+        }
+        #rejillaCalculadora button:hover { background: #4b5563; transform: none; }
+        #rejillaCalculadora .operador { background: #0f766e; }
+        #rejillaCalculadora .igual { background: #16a34a; }
+        #rejillaCalculadora .limpiar { background: #b91c1c; }
+        #rejillaCalculadora .cientifica { background: #4f46e5; }
+        #botonModoCalculadora { width: 100%; margin: 7px 0 0; padding: 7px; font-size: 13px; background: #475569; color: white; box-shadow: none; }
+        #rejillaCalculadora.cientificaActiva { grid-template-columns: repeat(5, 1fr); }
+        #rejillaCalculadora.cientificaActiva button { font-size: 13px; padding: 9px 1px; }
+        #calculadoraAyuda { margin: 5px 0 0; color: #cbd5e1; font-size: 10px; }
 
-
-        /* =========================
-           CELULAR
-        ========================= */
-
+        /* Ajustes para pantallas pequeñas. */
         @media (max-width: 600px) {
-
-            body {
-
-                padding-bottom: 90px;
-
-            }
-
-
-            h1 {
-
-                font-size: 28px;
-
-                margin-top: 20px;
-
-            }
-
-
-            button {
-
-                font-size: 18px;
-
-                padding: 9px 14px;
-
-                margin: 6px;
-
-            }
-
-
-            .carpeta {
-
-                width: 88%;
-
-                box-sizing: border-box;
-
-                font-size: 18px;
-
-                padding: 14px;
-
-            }
-
-
-            .subcarpeta {
-
-                width: 88%;
-
-                box-sizing: border-box;
-
-                font-size: 18px;
-
-            }
-
-
-            .contenidoVentana {
-
-                width: 85%;
-
-                max-width: 350px;
-
-                box-sizing: border-box;
-
-                padding: 20px;
-
-            }
-
-
-            #fila {
-
-                flex-direction: column;
-
-                gap: 10px;
-
-            }
-
-
-            #fila input {
-
-                width: 100%;
-
-                box-sizing: border-box;
-
-                padding: 10px;
-
-                font-size: 16px;
-
-            }
-
-
-            #icono {
-
-                font-size: 50px;
-
-            }
-
-
-            #barraBusqueda input {
-
-                width: 85%;
-
-                box-sizing: border-box;
-
-                font-size: 16px;
-
-            }
-
-
-            #contenidoCarpeta {
-
-                width: 92%;
-
-                min-height: 350px;
-
-                font-size: 16px;
-
-            }
-
-
-            #listaAdjuntos {
-
-                width: 92%;
-
-            }
-
-
-            .adjunto img {
-
-                max-width: 100%;
-
-                height: auto;
-
-            }
-
-
-            .adjunto video {
-
-                max-width: 100%;
-
-                height: auto;
-
-            }
-
-
-            #barraInferior {
-
-                padding: 4px 0;
-
-            }
-
-
-            #barraInferior button {
-
-                font-size: 16px;
-
-                padding: 8px 12px;
-
-            }
-
-
-            #marcaNexus {
-
-                font-size: 10px;
-
-                bottom: 4px;
-
-                right: 6px;
-
-            }
-
+            body { padding-bottom: 90px; }
+            h1 { font-size: 28px; margin-top: 20px; }
+            button { font-size: 18px; padding: 9px 14px; margin: 6px; }
+            .carpeta { width: 88%; font-size: 18px; padding: 14px; }
+            .subcarpeta { width: 88%; font-size: 18px; }
+            .contenidoVentana { width: 85%; max-width: 350px; box-sizing: border-box; padding: 20px; }
+            #fila { flex-direction: column; gap: 10px; }
+            #fila input { width: 100%; box-sizing: border-box; padding: 10px; font-size: 16px; }
+            #icono { font-size: 50px; }
+            #barraBusqueda input { width: 85%; box-sizing: border-box; font-size: 16px; }
+            #contenidoCarpeta { width: 92%; min-height: 350px; font-size: 16px; }
+            #listaAdjuntos { width: 92%; }
+            .adjunto img, .adjunto video { max-width: 100%; height: auto; }
+            #barraInferior { padding: 4px 0; }
+            #barraInferior button { font-size: 16px; padding: 8px 12px; }
+            #marcaNexus { font-size: 10px; bottom: 4px; right: 6px; }
+            #zonaNotas { width: 92%; min-height: 340px; }
+            .nota { width: 165px; }
+            #calculadora { width: 220px; right: 5px; top: 120px; transform: scale(0.92); transform-origin: top right; }
         }
-
     </style>
-
 </head>
-
-
 <body>
-
-
+    <!-- Título de la aplicación. -->
     <h1>Organizador personal</h1>
 
+    <!-- Botón para abrir la ventana de nueva carpeta. -->
+    <button onclick="abrirVentana()">+</button>
+    <!-- Botón para cambiar el tema claro/oscuro. -->
+    <button id="botonTema" onclick="cambiarTema()">🌙</button>
 
-    <!-- =========================
-         BOTÓN CREAR
-    ========================= -->
-
-    <button onclick="abrirVentana()">
-        +
-    </button>
-
-
-    <!-- =========================
-         BOTÓN MODO OSCURO
-    ========================= -->
-
-    <button
-        id="botonTema"
-        onclick="cambiarTema()">
-
-        🌙
-
-    </button>
-
-
-    <!-- =========================
-         VENTANA NUEVA CARPETA
-    ========================= -->
-
+    <!-- Ventana emergente para crear una carpeta principal. -->
     <div id="ventana" class="ventana">
-
         <div class="contenidoVentana">
-
             <h2>Nueva carpeta</h2>
-
             <div id="fila">
-
-                <input
-                    type="text"
-                    id="nombreCarpeta"
-                    placeholder="Inserte nombre">
-
-                <div id="icono">
-                    📁
-                </div>
-
+                <input type="text" id="nombreCarpeta" placeholder="Inserte nombre">
+                <div id="icono">📁</div>
             </div>
-
-            <button onclick="crearCarpeta()">
-                Crear
-            </button>
-
-            <button onclick="cerrarVentana()">
-                Cancelar
-            </button>
-
+            <button onclick="crearCarpeta()">Crear</button>
+            <button onclick="cerrarVentana()">Cancelar</button>
         </div>
-
     </div>
 
-
-    <!-- =========================
-         VENTANA NUEVA SUBCARPETA
-    ========================= -->
-
-    <div
-        id="ventanaSubcarpeta"
-        class="ventana">
-
+    <!-- Ventana emergente para crear una subcarpeta. -->
+    <div id="ventanaSubcarpeta" class="ventana">
         <div class="contenidoVentana">
-
             <h2>Nueva subcarpeta</h2>
-
             <div id="fila">
-
-                <input
-                    type="text"
-                    id="nombreSubcarpeta"
-                    placeholder="Inserte nombre">
-
-                <div id="icono">
-                    📂
-                </div>
-
+                <input type="text" id="nombreSubcarpeta" placeholder="Inserte nombre">
+                <div id="icono">📂</div>
             </div>
-
-            <button onclick="crearSubcarpeta()">
-                Crear
-            </button>
-
-            <button
-                onclick="cerrarVentanaSubcarpeta()">
-
-                Cancelar
-
-            </button>
-
+            <button onclick="crearSubcarpeta()">Crear</button>
+            <button onclick="cerrarVentanaSubcarpeta()">Cancelar</button>
         </div>
-
     </div>
 
-
-    <!-- =========================
-         ORDENAR
-    ========================= -->
-
-    <button onclick="mostrarOrdenar()">
-        ≡
-    </button>
-
-
-    <div
-        id="ventanaOrdenar"
-        class="ventana">
-
+    <!-- Ventana de opciones para ordenar las carpetas. -->
+    <button onclick="mostrarOrdenar()">≡</button>
+    <div id="ventanaOrdenar" class="ventana">
         <div class="contenidoVentana">
-
             <h2>Ordenar carpetas</h2>
-
-            <button onclick="ordenarPorFecha()">
-                📅 Fecha de creación
-            </button>
-
-            <button onclick="ordenarPorNombre()">
-                🔤 Nombre
-            </button>
-
-            <br>
-
-            <button onclick="cerrarOrdenar()">
-                Cerrar
-            </button>
-
+            <button onclick="ordenarPorFecha()">📅 Fecha de creación</button>
+            <button onclick="ordenarPorNombre()">🔤 Nombre</button><br>
+            <button onclick="cerrarOrdenar()">Cerrar</button>
         </div>
-
     </div>
 
-
-    <!-- =========================
-         BÚSQUEDA
-    ========================= -->
-
-    <button onclick="mostrarBusqueda()">
-        🔍
-    </button>
-
-
-    <div
-        id="barraBusqueda"
-        style="display:none; margin:15px;">
-
-        <input
-            type="text"
-            id="busqueda"
-            placeholder="Buscar..."
-            oninput="buscar()">
-
+    <!-- Botón y campo de búsqueda. -->
+    <button onclick="mostrarBusqueda()">🔍</button>
+    <div id="barraBusqueda" style="display:none; margin:15px;">
+        <input type="text" id="busqueda" placeholder="Buscar..." oninput="buscar()">
     </div>
 
-
-    <!-- =========================
-         LISTA DE CARPETAS
-    ========================= -->
-
+    <!-- Aquí JavaScript dibuja las carpetas principales. -->
     <div id="listaCarpetas"></div>
 
-
-    <!-- =========================
-         VISTA DE CARPETA
-    ========================= -->
-
+    <!-- Vista interior de la carpeta o subcarpeta que se haya abierto. -->
     <div id="vistaCarpeta">
-
-        <button onclick="cerrarCarpeta()">
-            ⬅ Volver
-        </button>
-
+        <button onclick="cerrarCarpeta()">⬅ Volver</button>
         <h2 id="tituloCarpeta"></h2>
-
-
-        <!-- SUBCARPETAS -->
-
         <div id="botonSubcarpetas">
-
-            <button
-                onclick="abrirVentanaSubcarpeta()">
-
-                📂 Subcarpetas
-
-            </button>
-
+            <button onclick="abrirVentanaSubcarpeta()">📂 Subcarpetas</button>
         </div>
-
-
         <div id="listaSubcarpetas"></div>
 
+        <!-- Botón para crear una nota. Las notas aparecen sobre cualquier zona de la carpeta. -->
+        <button onclick="crearNota()">🗒️ Nueva nota adhesiva</button>
+        <!-- Capa transparente que cubre toda la carpeta; solo las notas reciben los clics. -->
+        <div id="zonaNotas"></div>
 
-        <!-- EDITOR -->
-
-        <div
-            id="contenidoCarpeta"
-            contenteditable="true"
-            spellcheck="true">
-
-        </div>
-
-
+        <!-- Editor principal. Se guarda automáticamente mientras escribes. -->
+        <div id="contenidoCarpeta" contenteditable="true" spellcheck="true"></div>
         <h3>Adjuntos</h3>
-
-
-        <input
-            type="file"
-            id="selectorArchivos"
-            multiple
-            accept="image/*,video/*,.pdf"
-            onchange="agregarArchivos()">
-
-
+        <input type="file" id="selectorArchivos" multiple accept="image/*,video/*,.pdf" onchange="agregarArchivos()">
         <div id="listaAdjuntos"></div>
-
     </div>
 
-
-    <!-- =========================
-         IMPORTAR / EXPORTAR
-    ========================= -->
-
+    <!-- Barra fija inferior para exportar o importar una copia de seguridad. -->
     <div id="barraInferior">
-
-        <button onclick="importarArchivo()">
-            📥 Importar
-        </button>
-
-        <button onclick="exportarArchivo()">
-            📤 Exportar
-        </button>
-
-        <input
-            type="file"
-            id="archivoImportar"
-            accept=".json"
-            style="display:none"
-            onchange="procesarImportacion()">
-
+        <button onclick="importarArchivo()">📥 Importar</button>
+        <button onclick="exportarArchivo()">📤 Exportar</button>
+        <input type="file" id="archivoImportar" accept=".json,application/json" style="display:none" onchange="procesarImportacion()">
     </div>
 
+    <!-- Calculadora flotante. Su barra superior permite moverla verticalmente. -->
+    <aside id="calculadora" aria-label="Calculadora flotante">
+        <div id="barraCalculadora">
+            <span>🧮 Calculadora<br><small>Arrastra para mover</small></span>
+            <span>↕</span>
+        </div>
+        <div id="pantallaCalculadora" aria-live="polite">0</div>
+        <div id="rejillaCalculadora">
+            <!-- Botones básicos. Cada botón llama a una función pequeña. -->
+            <button class="limpiar" onclick="pulsarCalculadora('AC')">AC</button>
+            <button onclick="pulsarCalculadora('SIGNO')">+/-</button>
+            <button onclick="pulsarCalculadora('%')">%</button>
+            <button class="operador" onclick="pulsarCalculadora('/')">÷</button>
+            <button onclick="pulsarCalculadora('7')">7</button>
+            <button onclick="pulsarCalculadora('8')">8</button>
+            <button onclick="pulsarCalculadora('9')">9</button>
+            <button class="operador" onclick="pulsarCalculadora('*')">×</button>
+            <button onclick="pulsarCalculadora('4')">4</button>
+            <button onclick="pulsarCalculadora('5')">5</button>
+            <button onclick="pulsarCalculadora('6')">6</button>
+            <button class="operador" onclick="pulsarCalculadora('-')">−</button>
+            <button onclick="pulsarCalculadora('1')">1</button>
+            <button onclick="pulsarCalculadora('2')">2</button>
+            <button onclick="pulsarCalculadora('3')">3</button>
+            <button class="operador" onclick="pulsarCalculadora('+')">+</button>
+            <button onclick="pulsarCalculadora('0')">0</button>
+            <button onclick="pulsarCalculadora('.')">.</button>
+            <button onclick="pulsarCalculadora('BORRAR')">⌫</button>
+            <button class="igual" onclick="pulsarCalculadora('=')">=</button>
+        </div>
+        <!-- Este botón muestra u oculta las funciones científicas. -->
+        <button id="botonModoCalculadora" onclick="cambiarModoCalculadora()">Activar modo científico</button>
+        <p id="calculadoraAyuda">Trigonometría en grados (°).</p>
+    </aside>
 
-    <!-- =========================
-         MARCA
-    ========================= -->
-
-    <div id="marcaNexus">
-
-        Made by Nexus • 2026 • Beta v0.1
-
-    </div>
-
+    <!-- Marca y número de versión. -->
+    <div id="marcaNexus">Made by Nexus • 2026 • Beta v0.2</div>
 
     <script>
+        /* =========================================================
+           DATOS PRINCIPALES DEL ORGANIZADOR
+           ========================================================= */
+        let carpetas = [];                 // Aquí guardamos todas las carpetas principales.
+        let carpetaActual = null;          // Carpeta principal que contiene la vista abierta.
+        let elementoActual = null;         // Carpeta o subcarpeta cuyo editor se está usando.
+        let esSubcarpetaActual = false;    // true si estamos dentro de una subcarpeta.
+        let contadorCreacion = 0;          // Número para recordar el orden de creación.
 
+        /* Devuelve un número entero aleatorio para separar las notas al crearlas. */
+        function numeroAleatorio(maximo) { return Math.floor(Math.random() * maximo); }
 
-        /* =========================
-           DATOS
-        ========================= */
-
-        let carpetas = [];
-
-        let carpetaActual = null;
-
-        let elementoActual = null;
-
-        let esSubcarpetaActual = false;
-
-        let contadorCreacion = 0;
-
-
-        /* =========================
-           MODO OSCURO
-        ========================= */
-
+        /* =========================================================
+           MODO CLARO Y OSCURO
+           ========================================================= */
         function cambiarTema() {
-
             document.body.classList.toggle("oscuro");
-
-            const oscuro =
-                document.body.classList.contains(
-                    "oscuro"
-                );
-
-            localStorage.setItem(
-                "temaOrganizador",
-                oscuro ? "oscuro" : "claro"
-            );
-
+            const oscuro = document.body.classList.contains("oscuro");
+            localStorage.setItem("temaOrganizador", oscuro ? "oscuro" : "claro");
             actualizarBotonTema();
-
         }
-
-
         function actualizarBotonTema() {
-
-            const boton =
-                document.getElementById(
-                    "botonTema"
-                );
-
-            if (
-                document.body.classList.contains(
-                    "oscuro"
-                )
-            ) {
-
-                boton.textContent = "☀️";
-
-            }
-
-            else {
-
-                boton.textContent = "🌙";
-
-            }
-
+            const boton = document.getElementById("botonTema");
+            boton.textContent = document.body.classList.contains("oscuro") ? "☀️" : "🌙";
         }
-
-
         function cargarTema() {
-
-            const tema =
-                localStorage.getItem(
-                    "temaOrganizador"
-                );
-
-            if (tema === "oscuro") {
-
-                document.body.classList.add(
-                    "oscuro"
-                );
-
+            if (localStorage.getItem("temaOrganizador") === "oscuro") {
+                document.body.classList.add("oscuro");
             }
-
             actualizarBotonTema();
-
         }
 
+        /* =========================================================
+           PREPARAR LOS DATOS ANTIGUOS Y NUEVOS
+           Las carpetas de la Beta v0.1 no tenían notas adhesivas.
+           Esta función agrega una lista vacía sin borrar lo anterior.
+           ========================================================= */
+        function prepararElemento(elemento) {
+            if (!Array.isArray(elemento.subcarpetas)) elemento.subcarpetas = [];
+            if (!Array.isArray(elemento.adjuntos)) elemento.adjuntos = [];
+            if (typeof elemento.contenido !== "string") elemento.contenido = "";
+            if (!Array.isArray(elemento.notas)) elemento.notas = [];
+            elemento.notas.forEach(nota => {
+                if (typeof nota.texto !== "string") nota.texto = "";
+                if (typeof nota.x !== "number") nota.x = 12;
+                if (typeof nota.y !== "number") nota.y = 40;
+                if (!nota.color) nota.color = "amarilla";
+                if (typeof nota.minimizada !== "boolean") nota.minimizada = false;
+                if (!nota.id) nota.id = Date.now() + Math.random();
+            });
+            elemento.subcarpetas.forEach(subcarpeta => prepararElemento(subcarpeta));
+        }
 
-        /* =========================
-           GUARDADO LOCAL
-        ========================= */
-
+        /* Guarda los datos actuales. También guarda primero lo escrito en el editor. */
         function guardarLocalmente() {
-
             guardarContenidoActual();
-
-            const datos = {
-
-                version: 2,
-
-                contadorCreacion:
-                    contadorCreacion,
-
-                carpetas:
-                    carpetas
-
-            };
-
+            const datos = { version: 3, contadorCreacion: contadorCreacion, carpetas: carpetas };
             try {
-
-                localStorage.setItem(
-
-                    "organizadorPersonal",
-
-                    JSON.stringify(datos)
-
-                );
-
+                localStorage.setItem("organizadorPersonal", JSON.stringify(datos));
+            } catch (error) {
+                console.error("No se pudo guardar localmente. Quizá los adjuntos ocupan demasiado espacio:", error);
+                alert("No se pudo guardar. Puede que los archivos adjuntos sean demasiado grandes. Exporta una copia de seguridad si aún puedes.");
             }
-
-            catch(error) {
-
-                console.error(
-                    "No se pudo guardar localmente:",
-                    error
-                );
-
-            }
-
         }
 
+        /* Guarda sin llamar otra vez a guardarContenidoActual; evita repetir llamadas. */
+        function guardarLocalmenteSinRecursion() {
+            const datos = { version: 3, contadorCreacion: contadorCreacion, carpetas: carpetas };
+            try {
+                localStorage.setItem("organizadorPersonal", JSON.stringify(datos));
+            } catch (error) {
+                console.error("Error guardando:", error);
+            }
+        }
 
-        /* =========================
-           CARGAR GUARDADO
-        ========================= */
-
+        /* Recupera los datos que el navegador guardó la última vez. */
         function cargarGuardadoLocal() {
-
             try {
-
-                const guardado =
-                    localStorage.getItem(
-                        "organizadorPersonal"
-                    );
-
-                if (!guardado) {
-                    return;
-                }
-
-                const datos =
-                    JSON.parse(guardado);
-
-                if (
-                    !datos.carpetas ||
-                    !Array.isArray(
-                        datos.carpetas
-                    )
-                ) {
-
-                    return;
-
-                }
-
-                carpetas =
-                    datos.carpetas;
-
-                contadorCreacion =
-                    datos.contadorCreacion ||
-                    carpetas.length;
-
-
-                carpetas.forEach(
-                    carpeta => {
-
-                        if (
-                            !carpeta.subcarpetas
-                        ) {
-
-                            carpeta.subcarpetas =
-                                [];
-
-                        }
-
-                        if (
-                            !carpeta.adjuntos
-                        ) {
-
-                            carpeta.adjuntos =
-                                [];
-
-                        }
-
-                        if (
-                            !carpeta.contenido
-                        ) {
-
-                            carpeta.contenido =
-                                "";
-
-                        }
-
-
-                        carpeta.subcarpetas.forEach(
-                            subcarpeta => {
-
-                                if (
-                                    !subcarpeta.adjuntos
-                                ) {
-
-                                    subcarpeta.adjuntos =
-                                        [];
-
-                                }
-
-                                if (
-                                    !subcarpeta.contenido
-                                ) {
-
-                                    subcarpeta.contenido =
-                                        "";
-
-                                }
-
-                            }
-                        );
-
-                    }
-                );
-
-
+                const guardado = localStorage.getItem("organizadorPersonal");
+                if (!guardado) return;
+                const datos = JSON.parse(guardado);
+                if (!datos || !Array.isArray(datos.carpetas)) return;
+                carpetas = datos.carpetas;
+                contadorCreacion = datos.contadorCreacion || carpetas.length;
+                carpetas.forEach(carpeta => prepararElemento(carpeta));
                 mostrarCarpetas();
-
+            } catch (error) {
+                console.error("No se pudo cargar el guardado:", error);
+                alert("No se pudieron leer los datos guardados. Si tienes una copia JSON, puedes importarla.");
             }
-
-            catch(error) {
-
-                console.error(
-                    "No se pudo cargar el guardado:",
-                    error
-                );
-
-            }
-
         }
 
-
-        /* =========================
-           CREAR CARPETA
-        ========================= */
-
+        /* =========================================================
+           CREAR, MOSTRAR Y ELIMINAR CARPETAS
+           ========================================================= */
         function abrirVentana() {
-
-            document
-                .getElementById("ventana")
-                .style.display = "flex";
-
-            document
-                .getElementById("nombreCarpeta")
-                .focus();
-
+            document.getElementById("ventana").style.display = "flex";
+            document.getElementById("nombreCarpeta").focus();
         }
-
-
-        function cerrarVentana() {
-
-            document
-                .getElementById("ventana")
-                .style.display = "none";
-
-        }
-
+        function cerrarVentana() { document.getElementById("ventana").style.display = "none"; }
 
         function crearCarpeta() {
-
-            const nombre =
-                document
-                    .getElementById(
-                        "nombreCarpeta"
-                    )
-                    .value
-                    .trim();
-
-            if (nombre === "") {
-                return;
-            }
-
-
+            const campo = document.getElementById("nombreCarpeta");
+            const nombre = campo.value.trim();
+            if (!nombre) { campo.focus(); return; }
             const carpeta = {
-
-                id:
-                    Date.now() +
-                    Math.random(),
-
-                nombre:
-                    nombre,
-
-                fecha:
-                    contadorCreacion++,
-
-                contenido:
-                    "",
-
-                adjuntos:
-                    [],
-
-                subcarpetas:
-                    []
-
+                id: Date.now() + Math.random(),
+                nombre: nombre,
+                fecha: contadorCreacion++,
+                contenido: "",
+                adjuntos: [],
+                subcarpetas: [],
+                notas: [] // La carpeta nueva empieza con su propia lista de notas vacía.
             };
-
-
             carpetas.push(carpeta);
-
-
-            document
-                .getElementById(
-                    "nombreCarpeta"
-                )
-                .value = "";
-
-
+            campo.value = "";
             cerrarVentana();
-
             mostrarCarpetas();
-
             guardarLocalmente();
-
         }
-
-
-        /* =========================
-           MOSTRAR CARPETAS
-        ========================= */
 
         function mostrarCarpetas() {
-
-            const lista =
-                document.getElementById(
-                    "listaCarpetas"
-                );
-
+            const lista = document.getElementById("listaCarpetas");
             lista.innerHTML = "";
-
-
-            carpetas.forEach(
-                carpeta => {
-
-                    const elemento =
-                        document.createElement(
-                            "div"
-                        );
-
-                    elemento.className =
-                        "carpeta";
-
-
-                    const botonEliminar =
-                        document.createElement(
-                            "button"
-                        );
-
-                    botonEliminar.className =
-                        "botonEliminarCarpeta";
-
-                    botonEliminar.textContent =
-                        "🗑️";
-
-
-                    botonEliminar.onclick =
-                        function(e) {
-
-                            e.stopPropagation();
-
-                            if (
-                                confirm(
-                                    "¿Seguro que quieres eliminar esta carpeta y todo su contenido?"
-                                )
-                            ) {
-
-                                const indice =
-                                    carpetas.indexOf(
-                                        carpeta
-                                    );
-
-                                if (
-                                    indice !== -1
-                                ) {
-
-                                    carpetas.splice(
-                                        indice,
-                                        1
-                                    );
-
-                                }
-
-                                mostrarCarpetas();
-
-                                guardarLocalmente();
-
-                            }
-
-                        };
-
-
-                    elemento.appendChild(
-                        botonEliminar
-                    );
-
-
-                    const titulo =
-                        document.createElement(
-                            "div"
-                        );
-
-                    titulo.textContent =
-                        "📁 " +
-                        carpeta.nombre;
-
-                    titulo.style.fontWeight =
-                        "bold";
-
-
-                    elemento.appendChild(
-                        titulo
-                    );
-
-
-                    const informacion =
-                        document.createElement(
-                            "small"
-                        );
-
-
-                    const tieneContenido =
-                        carpeta.contenido &&
-                        carpeta.contenido.trim()
-                            !== "";
-
-
-                    const tieneSubcarpetas =
-                        carpeta.subcarpetas &&
-                        carpeta.subcarpetas.length
-                            > 0;
-
-
-                    const tieneAdjuntos =
-                        carpeta.adjuntos &&
-                        carpeta.adjuntos.length
-                            > 0;
-
-
-                    if (
-                        tieneContenido ||
-                        tieneSubcarpetas ||
-                        tieneAdjuntos
-                    ) {
-
-                        let detalles = [];
-
-
-                        if (tieneContenido) {
-
-                            detalles.push(
-                                "📝 Contenido"
-                            );
-
-                        }
-
-
-                        if (tieneSubcarpetas) {
-
-                            detalles.push(
-                                "📂 " +
-                                carpeta.subcarpetas.length +
-                                " subcarpeta(s)"
-                            );
-
-                        }
-
-
-                        if (tieneAdjuntos) {
-
-                            detalles.push(
-                                "📎 " +
-                                carpeta.adjuntos.length +
-                                " archivo(s)"
-                            );
-
-                        }
-
-
-                        informacion.textContent =
-                            detalles.join(
-                                " • "
-                            );
-
-                        informacion.style.color =
-                            "#888";
-
+            carpetas.forEach(carpeta => {
+                const elemento = document.createElement("div");
+                elemento.className = "carpeta";
+                const botonEliminar = document.createElement("button");
+                botonEliminar.className = "botonEliminarCarpeta";
+                botonEliminar.textContent = "🗑️";
+                botonEliminar.title = "Eliminar carpeta";
+                botonEliminar.onclick = function(evento) {
+                    evento.stopPropagation();
+                    if (confirm("¿Seguro que quieres eliminar esta carpeta y todo su contenido?")) {
+                        carpetas.splice(carpetas.indexOf(carpeta), 1);
+                        mostrarCarpetas();
+                        guardarLocalmente();
                     }
+                };
+                elemento.appendChild(botonEliminar);
+                const titulo = document.createElement("div");
+                titulo.textContent = "📁 " + carpeta.nombre;
+                titulo.style.fontWeight = "bold";
+                elemento.appendChild(titulo);
 
-                    else {
-
-                        informacion.textContent =
-                            "Carpeta vacía";
-
-                        informacion.style.color =
-                            "#999";
-
-                    }
-
-
-                    informacion.style.display =
-                        "block";
-
-                    informacion.style.marginTop =
-                        "5px";
-
-                    informacion.style.fontSize =
-                        "13px";
-
-
-                    elemento.appendChild(
-                        informacion
-                    );
-
-
-                    elemento.onclick =
-                        function() {
-
-                            abrirCarpeta(
-                                carpeta
-                            );
-
-                        };
-
-
-                    lista.appendChild(
-                        elemento
-                    );
-
-                }
-            );
-
+                /* Creamos un resumen corto de lo que contiene la carpeta. */
+                const informacion = document.createElement("small");
+                const detalles = [];
+                if (carpeta.contenido && carpeta.contenido.trim()) detalles.push("📝 Contenido");
+                if (carpeta.subcarpetas && carpeta.subcarpetas.length) detalles.push("📂 " + carpeta.subcarpetas.length + " subcarpeta(s)");
+                if (carpeta.adjuntos && carpeta.adjuntos.length) detalles.push("📎 " + carpeta.adjuntos.length + " archivo(s)");
+                if (carpeta.notas && carpeta.notas.length) detalles.push("🗒️ " + carpeta.notas.length + " nota(s)");
+                informacion.textContent = detalles.length ? detalles.join(" • ") : "Carpeta vacía";
+                informacion.style.cssText = "display:block;margin-top:5px;font-size:13px;color:#888;";
+                elemento.appendChild(informacion);
+                elemento.onclick = () => abrirCarpeta(carpeta);
+                lista.appendChild(elemento);
+            });
+            buscar();
         }
-
-
-        /* =========================
-           ABRIR CARPETA
-        ========================= */
 
         function abrirCarpeta(carpeta) {
-
-            carpetaActual =
-                carpeta;
-
-            elementoActual =
-                carpeta;
-
-            esSubcarpetaActual =
-                false;
-
-
-            document
-                .getElementById(
-                    "tituloCarpeta"
-                )
-                .textContent =
-                    carpeta.nombre;
-
-
-            document
-                .getElementById(
-                    "contenidoCarpeta"
-                )
-                .innerHTML =
-                    carpeta.contenido;
-
-
-            document
-                .getElementById(
-                    "botonSubcarpetas"
-                )
-                .style.display =
-                    "block";
-
-
-            mostrarSubcarpetas();
-
-            mostrarAdjuntos();
-
-
-            document
-                .getElementById(
-                    "listaCarpetas"
-                )
-                .style.display =
-                    "none";
-
-
-            document
-                .getElementById(
-                    "vistaCarpeta"
-                )
-                .style.display =
-                    "block";
-
-        }
-
-
-        /* =========================
-           ABRIR SUBCARPETA
-        ========================= */
-
-        function abrirSubcarpeta(
-            subcarpeta
-        ) {
-
             guardarContenidoActual();
-
-            elementoActual =
-                subcarpeta;
-
-            esSubcarpetaActual =
-                true;
-
-
-            document
-                .getElementById(
-                    "tituloCarpeta"
-                )
-                .textContent =
-                    subcarpeta.nombre;
-
-
-            document
-                .getElementById(
-                    "contenidoCarpeta"
-                )
-                .innerHTML =
-                    subcarpeta.contenido;
-
-
-            document
-                .getElementById(
-                    "botonSubcarpetas"
-                )
-                .style.display =
-                    "none";
-
-
-            document
-                .getElementById(
-                    "listaSubcarpetas"
-                )
-                .innerHTML =
-                    "";
-
-
+            carpetaActual = carpeta;
+            elementoActual = carpeta;
+            esSubcarpetaActual = false;
+            prepararElemento(carpeta);
+            document.getElementById("tituloCarpeta").textContent = carpeta.nombre;
+            document.getElementById("contenidoCarpeta").innerHTML = carpeta.contenido;
+            document.getElementById("botonSubcarpetas").style.display = "block";
+            document.getElementById("listaCarpetas").style.display = "none";
+            document.getElementById("vistaCarpeta").style.display = "block";
+            mostrarSubcarpetas();
             mostrarAdjuntos();
-
+            mostrarNotas();
         }
 
-
-        /* =========================
-           MOSTRAR SUBCARPETAS
-        ========================= */
+        function abrirSubcarpeta(subcarpeta) {
+            guardarContenidoActual();
+            elementoActual = subcarpeta;
+            esSubcarpetaActual = true;
+            prepararElemento(subcarpeta);
+            document.getElementById("tituloCarpeta").textContent = subcarpeta.nombre;
+            document.getElementById("contenidoCarpeta").innerHTML = subcarpeta.contenido;
+            document.getElementById("botonSubcarpetas").style.display = "none";
+            document.getElementById("listaSubcarpetas").innerHTML = "";
+            mostrarAdjuntos();
+            mostrarNotas();
+        }
 
         function mostrarSubcarpetas() {
-
-            const lista =
-                document.getElementById(
-                    "listaSubcarpetas"
-                );
-
+            const lista = document.getElementById("listaSubcarpetas");
             lista.innerHTML = "";
-
-
-            if (!carpetaActual) {
-                return;
-            }
-
-
-            if (
-                !carpetaActual.subcarpetas
-            ) {
-
-                carpetaActual.subcarpetas =
-                    [];
-
-            }
-
-
-            carpetaActual.subcarpetas.forEach(
-                subcarpeta => {
-
-                    const elemento =
-                        document.createElement(
-                            "div"
-                        );
-
-                    elemento.className =
-                        "subcarpeta";
-
-
-                    elemento.textContent =
-                        "📂 " +
-                        subcarpeta.nombre;
-
-
-                    elemento.onclick =
-                        function() {
-
-                            abrirSubcarpeta(
-                                subcarpeta
-                            );
-
-                        };
-
-
-                    lista.appendChild(
-                        elemento
-                    );
-
-                }
-            );
-
+            if (!carpetaActual) return;
+            if (!Array.isArray(carpetaActual.subcarpetas)) carpetaActual.subcarpetas = [];
+            carpetaActual.subcarpetas.forEach(subcarpeta => {
+                const elemento = document.createElement("div");
+                elemento.className = "subcarpeta";
+                elemento.textContent = "📂 " + subcarpeta.nombre;
+                elemento.onclick = () => abrirSubcarpeta(subcarpeta);
+                lista.appendChild(elemento);
+            });
         }
-
-
-        /* =========================
-           CREAR SUBCARPETA
-        ========================= */
 
         function abrirVentanaSubcarpeta() {
-
-            if (
-                !carpetaActual ||
-                esSubcarpetaActual
-            ) {
-
-                return;
-
-            }
-
-
-            document
-                .getElementById(
-                    "ventanaSubcarpeta"
-                )
-                .style.display =
-                    "flex";
-
-
-            document
-                .getElementById(
-                    "nombreSubcarpeta"
-                )
-                .focus();
-
+            if (!carpetaActual || esSubcarpetaActual) return;
+            document.getElementById("ventanaSubcarpeta").style.display = "flex";
+            document.getElementById("nombreSubcarpeta").focus();
         }
-
-
-        function cerrarVentanaSubcarpeta() {
-
-            document
-                .getElementById(
-                    "ventanaSubcarpeta"
-                )
-                .style.display =
-                    "none";
-
-        }
-
+        function cerrarVentanaSubcarpeta() { document.getElementById("ventanaSubcarpeta").style.display = "none"; }
 
         function crearSubcarpeta() {
-
-            if (
-                !carpetaActual ||
-                esSubcarpetaActual
-            ) {
-
-                return;
-
-            }
-
-
-            const nombre =
-                document
-                    .getElementById(
-                        "nombreSubcarpeta"
-                    )
-                    .value
-                    .trim();
-
-
-            if (nombre === "") {
-                return;
-            }
-
-
-            if (
-                !carpetaActual.subcarpetas
-            ) {
-
-                carpetaActual.subcarpetas =
-                    [];
-
-            }
-
-
+            if (!carpetaActual || esSubcarpetaActual) return;
+            const campo = document.getElementById("nombreSubcarpeta");
+            const nombre = campo.value.trim();
+            if (!nombre) { campo.focus(); return; }
+            if (!Array.isArray(carpetaActual.subcarpetas)) carpetaActual.subcarpetas = [];
             const subcarpeta = {
-
-                id:
-                    Date.now() +
-                    Math.random(),
-
-                nombre:
-                    nombre,
-
-                fecha:
-                    contadorCreacion++,
-
-                contenido:
-                    "",
-
-                adjuntos:
-                    []
-
+                id: Date.now() + Math.random(),
+                nombre: nombre,
+                fecha: contadorCreacion++,
+                contenido: "",
+                adjuntos: [],
+                notas: [] // Las notas de la subcarpeta son independientes de las de su carpeta principal.
             };
-
-
-            carpetaActual
-                .subcarpetas
-                .push(
-                    subcarpeta
-                );
-
-
-            document
-                .getElementById(
-                    "nombreSubcarpeta"
-                )
-                .value =
-                    "";
-
-
+            carpetaActual.subcarpetas.push(subcarpeta);
+            campo.value = "";
             cerrarVentanaSubcarpeta();
-
             mostrarSubcarpetas();
-
             guardarLocalmente();
-
         }
-
-
-        /* =========================
-           CERRAR CARPETA
-        ========================= */
 
         function cerrarCarpeta() {
-
             guardarContenidoActual();
-
             guardarLocalmente();
-
-
-            document
-                .getElementById(
-                    "vistaCarpeta"
-                )
-                .style.display =
-                    "none";
-
-
-            document
-                .getElementById(
-                    "listaCarpetas"
-                )
-                .style.display =
-                    "block";
-
-
-            document
-                .getElementById(
-                    "botonSubcarpetas"
-                )
-                .style.display =
-                    "block";
-
-
-            document
-                .getElementById(
-                    "listaSubcarpetas"
-                )
-                .innerHTML =
-                    "";
-
-
-            carpetaActual =
-                null;
-
-            elementoActual =
-                null;
-
-            esSubcarpetaActual =
-                false;
-
+            document.getElementById("vistaCarpeta").style.display = "none";
+            document.getElementById("listaCarpetas").style.display = "block";
+            document.getElementById("botonSubcarpetas").style.display = "block";
+            document.getElementById("listaSubcarpetas").innerHTML = "";
+            carpetaActual = null;
+            elementoActual = null;
+            esSubcarpetaActual = false;
+            mostrarCarpetas();
         }
 
-
-        /* =========================
-           GUARDAR CONTENIDO
-        ========================= */
-
+        /* =========================================================
+           GUARDAR EL EDITOR Y CONVERTIR DIRECCIONES WEB EN ENLACES
+           ========================================================= */
         function guardarContenidoActual() {
-
-            if (!elementoActual) {
-                return;
-            }
-
-
-            elementoActual.contenido =
-                document
-                    .getElementById(
-                        "contenidoCarpeta"
-                    )
-                    .innerHTML;
-
+            if (!elementoActual) return;
+            elementoActual.contenido = document.getElementById("contenidoCarpeta").innerHTML;
         }
 
-
-        /* =========================
-           EDITOR
-        ========================= */
-
-        const editor =
-            document.getElementById(
-                "contenidoCarpeta"
-            );
-
-
-        editor.addEventListener(
-            "input",
-            function() {
-
-                guardarContenidoActual();
-
-                guardarLocalmenteSinRecursion();
-
-            }
-        );
-
-
-        editor.addEventListener(
-            "keydown",
-            function(e) {
-
-                if (
-                    e.key === " " ||
-                    e.key === "Enter"
-                ) {
-
-                    setTimeout(
-                        convertirEnlaces,
-                        0
-                    );
-
-                }
-
-            }
-        );
-
-
-        function guardarLocalmenteSinRecursion() {
-
-            const datos = {
-
-                version: 2,
-
-                contadorCreacion:
-                    contadorCreacion,
-
-                carpetas:
-                    carpetas
-
-            };
-
-
-            try {
-
-                localStorage.setItem(
-                    "organizadorPersonal",
-                    JSON.stringify(datos)
-                );
-
-            }
-
-            catch(error) {
-
-                console.error(
-                    "Error guardando:",
-                    error
-                );
-
-            }
-
-        }
-
-
-        /* =========================
-           CONVERTIR ENLACES
-        ========================= */
+        const editor = document.getElementById("contenidoCarpeta");
+        editor.addEventListener("input", function() {
+            guardarContenidoActual();
+            guardarLocalmenteSinRecursion();
+        });
+        editor.addEventListener("keydown", function(evento) {
+            if (evento.key === " " || evento.key === "Enter") setTimeout(convertirEnlaces, 0);
+        });
 
         function convertirEnlaces() {
-
-            const editor =
-                document.getElementById(
-                    "contenidoCarpeta"
-                );
-
-
-            const walker =
-                document.createTreeWalker(
-                    editor,
-                    NodeFilter.SHOW_TEXT
-                );
-
-
+            const editorActual = document.getElementById("contenidoCarpeta");
+            const caminante = document.createTreeWalker(editorActual, NodeFilter.SHOW_TEXT);
             const nodos = [];
-
-
-            while (
-                walker.nextNode()
-            ) {
-
-                nodos.push(
-                    walker.currentNode
-                );
-
-            }
-
-
-            nodos.forEach(
-                nodo => {
-
-                    if (
-                        nodo.parentElement &&
-                        nodo.parentElement.tagName ===
-                        "A"
-                    ) {
-
-                        return;
-
+            while (caminante.nextNode()) nodos.push(caminante.currentNode);
+            nodos.forEach(nodo => {
+                /* No intentamos convertir el texto que ya está dentro de un enlace. */
+                if (nodo.parentElement && nodo.parentElement.closest("a")) return;
+                const texto = nodo.textContent;
+                const regex = /https?:\/\/[^\s]+/gi;
+                if (!regex.test(texto)) return;
+                regex.lastIndex = 0;
+                const fragmento = document.createDocumentFragment();
+                let ultimaPosicion = 0;
+                texto.replace(regex, function(url, posicion) {
+                    fragmento.appendChild(document.createTextNode(texto.substring(ultimaPosicion, posicion)));
+                    /* Quitamos algunos signos finales que suelen ir después de una URL. */
+                    let urlLimpia = url;
+                    let signosFinales = "";
+                    while (/[.,!?;:]$/.test(urlLimpia)) {
+                        signosFinales = urlLimpia.slice(-1) + signosFinales;
+                        urlLimpia = urlLimpia.slice(0, -1);
                     }
-
-
-                    const texto =
-                        nodo.textContent;
-
-
-                    const regex =
-                        /https?:\/\/[^\s]+/gi;
-
-
-                    if (
-                        !regex.test(texto)
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    regex.lastIndex =
-                        0;
-
-
-                    const fragmento =
-                        document
-                            .createDocumentFragment();
-
-
-                    let ultimaPosicion =
-                        0;
-
-
-                    texto.replace(
-                        regex,
-                        function(
-                            url,
-                            posicion
-                        ) {
-
-                            fragmento.appendChild(
-                                document.createTextNode(
-                                    texto.substring(
-                                        ultimaPosicion,
-                                        posicion
-                                    )
-                                )
-                            );
-
-
-                            const enlace =
-                                document.createElement(
-                                    "a"
-                                );
-
-
-                            enlace.href =
-                                url;
-
-                            enlace.target =
-                                "_blank";
-
-                            enlace.rel =
-                                "noopener noreferrer";
-
-                            enlace.textContent =
-                                url;
-
-
-                            fragmento.appendChild(
-                                enlace
-                            );
-
-
-                            ultimaPosicion =
-                                posicion +
-                                url.length;
-
-                        }
-                    );
-
-
-                    fragmento.appendChild(
-                        document.createTextNode(
-                            texto.substring(
-                                ultimaPosicion
-                            )
-                        )
-                    );
-
-
-                    nodo.parentNode.replaceChild(
-                        fragmento,
-                        nodo
-                    );
-
-                }
-            );
-
-
+                    const enlace = document.createElement("a");
+                    enlace.href = urlLimpia;
+                    enlace.target = "_blank";
+                    enlace.rel = "noopener noreferrer";
+                    enlace.textContent = urlLimpia;
+                    fragmento.appendChild(enlace);
+                    if (signosFinales) fragmento.appendChild(document.createTextNode(signosFinales));
+                    ultimaPosicion = posicion + url.length;
+                });
+                fragmento.appendChild(document.createTextNode(texto.substring(ultimaPosicion)));
+                nodo.parentNode.replaceChild(fragmento, nodo);
+            });
             guardarContenidoActual();
-
             guardarLocalmenteSinRecursion();
-
         }
 
-
-        /* =========================
-           BÚSQUEDA
-        ========================= */
-
+        /* =========================================================
+           BUSCAR Y ORDENAR CARPETAS
+           ========================================================= */
         function mostrarBusqueda() {
-
-            const barra =
-                document.getElementById(
-                    "barraBusqueda"
-                );
-
-
-            if (
-                barra.style.display ===
-                "none"
-            ) {
-
-                barra.style.display =
-                    "block";
-
-
-                document
-                    .getElementById(
-                        "busqueda"
-                    )
-                    .focus();
-
-            }
-
-            else {
-
-                barra.style.display =
-                    "none";
-
-
-                document
-                    .getElementById(
-                        "busqueda"
-                    )
-                    .value =
-                        "";
-
-
+            const barra = document.getElementById("barraBusqueda");
+            if (barra.style.display === "none") {
+                barra.style.display = "block";
+                document.getElementById("busqueda").focus();
+            } else {
+                barra.style.display = "none";
+                document.getElementById("busqueda").value = "";
                 buscar();
-
             }
-
         }
-
-
         function buscar() {
-
-            const texto =
-                document
-                    .getElementById(
-                        "busqueda"
-                    )
-                    .value
-                    .toLowerCase();
-
-
-            const elementos =
-                document
-                    .getElementById(
-                        "listaCarpetas"
-                    )
-                    .children;
-
-
-            for (
-                let i = 0;
-                i < elementos.length;
-                i++
-            ) {
-
-                const carpeta =
-                    carpetas[i];
-
-
-                if (
-                    carpeta.nombre
-                        .toLowerCase()
-                        .includes(texto)
-                ) {
-
-                    elementos[i]
-                        .style
-                        .display =
-                            "block";
-
-                }
-
-                else {
-
-                    elementos[i]
-                        .style
-                        .display =
-                            "none";
-
-                }
-
+            const campo = document.getElementById("busqueda");
+            const texto = campo.value.toLowerCase();
+            const elementos = document.getElementById("listaCarpetas").children;
+            for (let i = 0; i < elementos.length; i++) {
+                const carpeta = carpetas[i];
+                elementos[i].style.display = carpeta && carpeta.nombre.toLowerCase().includes(texto) ? "block" : "none";
             }
-
         }
-
-
-        /* =========================
-           ORDENAR
-        ========================= */
-
-        function mostrarOrdenar() {
-
-            document
-                .getElementById(
-                    "ventanaOrdenar"
-                )
-                .style.display =
-                    "flex";
-
-        }
-
-
-        function cerrarOrdenar() {
-
-            document
-                .getElementById(
-                    "ventanaOrdenar"
-                )
-                .style.display =
-                    "none";
-
-        }
-
-
+        function mostrarOrdenar() { document.getElementById("ventanaOrdenar").style.display = "flex"; }
+        function cerrarOrdenar() { document.getElementById("ventanaOrdenar").style.display = "none"; }
         function ordenarPorNombre() {
-
-            carpetas.sort(
-                (a, b) =>
-                    a.nombre.localeCompare(
-                        b.nombre
-                    )
-            );
-
-
-            mostrarCarpetas();
-
-            guardarLocalmente();
-
-            cerrarOrdenar();
-
+            carpetas.sort((a, b) => a.nombre.localeCompare(b.nombre, "es"));
+            mostrarCarpetas(); guardarLocalmente(); cerrarOrdenar();
         }
-
-
         function ordenarPorFecha() {
-
-            carpetas.sort(
-                (a, b) =>
-                    a.fecha -
-                    b.fecha
-            );
-
-
-            mostrarCarpetas();
-
-            guardarLocalmente();
-
-            cerrarOrdenar();
-
+            carpetas.sort((a, b) => a.fecha - b.fecha);
+            mostrarCarpetas(); guardarLocalmente(); cerrarOrdenar();
         }
 
-
-        /* =========================
-           ADJUNTOS
-        ========================= */
-
+        /* =========================================================
+           ADJUNTAR Y MOSTRAR IMÁGENES, VÍDEOS Y PDF
+           ========================================================= */
         function agregarArchivos() {
-
-            if (!elementoActual) {
-                return;
-            }
-
-
-            const selector =
-                document.getElementById(
-                    "selectorArchivos"
-                );
-
-
-            const archivos =
-                Array.from(
-                    selector.files
-                );
-
-
-            archivos.forEach(
-                archivo => {
-
-                    const lector =
-                        new FileReader();
-
-
-                    lector.onload =
-                        function(e) {
-
-                            if (
-                                !elementoActual.adjuntos
-                            ) {
-
-                                elementoActual.adjuntos =
-                                    [];
-
-                            }
-
-
-                            elementoActual
-                                .adjuntos
-                                .push({
-
-                                    nombre:
-                                        archivo.name,
-
-                                    tipo:
-                                        archivo.type,
-
-                                    datos:
-                                        e.target.result
-
-                                });
-
-
-                            mostrarAdjuntos();
-
-                            guardarLocalmente();
-
-                        };
-
-
-                    lector.readAsDataURL(
-                        archivo
-                    );
-
-                }
-            );
-
-
+            if (!elementoActual) return;
+            const selector = document.getElementById("selectorArchivos");
+            const archivos = Array.from(selector.files);
+            archivos.forEach(archivo => {
+                const lector = new FileReader();
+                lector.onload = function(evento) {
+                    /* Guardamos una copia del archivo como texto Data URL. */
+                    if (!Array.isArray(elementoActual.adjuntos)) elementoActual.adjuntos = [];
+                    elementoActual.adjuntos.push({ nombre: archivo.name, tipo: archivo.type, datos: evento.target.result });
+                    mostrarAdjuntos();
+                    guardarLocalmente();
+                };
+                lector.onerror = function() { alert("No se pudo leer el archivo: " + archivo.name); };
+                lector.readAsDataURL(archivo);
+            });
             selector.value = "";
-
         }
-
 
         function mostrarAdjuntos() {
-
-            const lista =
-                document.getElementById(
-                    "listaAdjuntos"
-                );
-
-
+            const lista = document.getElementById("listaAdjuntos");
             lista.innerHTML = "";
-
-
-            if (!elementoActual) {
-                return;
-            }
-
-
-            if (
-                !elementoActual.adjuntos
-            ) {
-
-                elementoActual.adjuntos =
-                    [];
-
-            }
-
-
-            elementoActual
-                .adjuntos
-                .forEach(
-                    (archivo, indice) => {
-
-                        const contenedor =
-                            document.createElement(
-                                "div"
-                            );
-
-
-                        contenedor.className =
-                            "adjunto";
-
-
-                        const nombre =
-                            document.createElement(
-                                "p"
-                            );
-
-
-                        nombre.textContent =
-                            "📎 " +
-                            archivo.nombre;
-
-
-                        contenedor.appendChild(
-                            nombre
-                        );
-
-
-                        if (
-                            archivo.tipo
-                                .startsWith(
-                                    "image/"
-                                )
-                        ) {
-
-                            const imagen =
-                                document.createElement(
-                                    "img"
-                                );
-
-
-                            imagen.src =
-                                archivo.datos;
-
-
-                            contenedor.appendChild(
-                                imagen
-                            );
-
-                        }
-
-
-                        else if (
-                            archivo.tipo
-                                .startsWith(
-                                    "video/"
-                                )
-                        ) {
-
-                            const video =
-                                document.createElement(
-                                    "video"
-                                );
-
-
-                            video.src =
-                                archivo.datos;
-
-                            video.controls =
-                                true;
-
-
-                            contenedor.appendChild(
-                                video
-                            );
-
-                        }
-
-
-                        else if (
-                            archivo.tipo ===
-                            "application/pdf"
-                        ) {
-
-                            const enlace =
-                                document.createElement(
-                                    "a"
-                                );
-
-
-                            enlace.href =
-                                archivo.datos;
-
-                            enlace.target =
-                                "_blank";
-
-                            enlace.textContent =
-                                "📄 Abrir PDF";
-
-
-                            contenedor.appendChild(
-                                enlace
-                            );
-
-                        }
-
-
-                        const eliminar =
-                            document.createElement(
-                                "button"
-                            );
-
-
-                        eliminar.textContent =
-                            "🗑️ Eliminar";
-
-
-                        eliminar.onclick =
-                            function() {
-
-                                elementoActual
-                                    .adjuntos
-                                    .splice(
-                                        indice,
-                                        1
-                                    );
-
-
-                                mostrarAdjuntos();
-
-                                guardarLocalmente();
-
-                            };
-
-
-                        contenedor.appendChild(
-                            eliminar
-                        );
-
-
-                        lista.appendChild(
-                            contenedor
-                        );
-
-                    }
-                );
-
+            if (!elementoActual) return;
+            if (!Array.isArray(elementoActual.adjuntos)) elementoActual.adjuntos = [];
+            elementoActual.adjuntos.forEach((archivo, indice) => {
+                const contenedor = document.createElement("div");
+                contenedor.className = "adjunto";
+                const nombre = document.createElement("p");
+                nombre.textContent = "📎 " + archivo.nombre;
+                contenedor.appendChild(nombre);
+                if (archivo.tipo && archivo.tipo.startsWith("image/")) {
+                    const imagen = document.createElement("img");
+                    imagen.src = archivo.datos;
+                    imagen.alt = archivo.nombre;
+                    contenedor.appendChild(imagen);
+                } else if (archivo.tipo && archivo.tipo.startsWith("video/")) {
+                    const video = document.createElement("video");
+                    video.src = archivo.datos;
+                    video.controls = true;
+                    contenedor.appendChild(video);
+                } else if (archivo.tipo === "application/pdf" || archivo.nombre.toLowerCase().endsWith(".pdf")) {
+                    const enlace = document.createElement("a");
+                    enlace.href = archivo.datos;
+                    enlace.target = "_blank";
+                    enlace.rel = "noopener noreferrer";
+                    enlace.textContent = "📄 Abrir PDF";
+                    contenedor.appendChild(enlace);
+                }
+                const eliminar = document.createElement("button");
+                eliminar.textContent = "🗑️ Eliminar";
+                eliminar.onclick = function() {
+                    elementoActual.adjuntos.splice(indice, 1);
+                    mostrarAdjuntos();
+                    guardarLocalmente();
+                };
+                contenedor.appendChild(eliminar);
+                lista.appendChild(contenedor);
+            });
         }
 
-
-        /* =========================
-           EXPORTAR
-        ========================= */
-
-        function exportarArchivo() {
-
-            guardarContenidoActual();
-
-            guardarLocalmente();
-
-
-            const datos = {
-
-                version: 2,
-
-                contadorCreacion:
-                    contadorCreacion,
-
-                carpetas:
-                    carpetas
-
+        /* =========================================================
+           NOTAS ADHESIVAS: CREAR, MOVER, CAMBIAR COLOR Y MINIMIZAR
+           ========================================================= */
+        function crearNota() {
+            if (!elementoActual) return;
+            if (!Array.isArray(elementoActual.notas)) elementoActual.notas = [];
+            /* Colocamos las nuevas notas en posiciones alternas para que no se tapen todas. */
+            const numero = elementoActual.notas.length;
+            const nota = {
+                id: Date.now() + Math.random(),
+                texto: "",
+                color: "amarilla",
+                x: 12 + (numero % 3) * 55,
+                y: 40 + (numero % 4) * 28,
+                minimizada: false
             };
+            elementoActual.notas.push(nota);
+            mostrarNotas();
+            guardarLocalmente();
+        }
 
+        function mostrarNotas() {
+            const zona = document.getElementById("zonaNotas");
+            zona.innerHTML = "";
+            if (!elementoActual) return;
+            if (!Array.isArray(elementoActual.notas)) elementoActual.notas = [];
+            elementoActual.notas.forEach(nota => {
+                /* Si la nota está minimizada, solo mostramos el botón amarillo redondo. */
+                if (nota.minimizada) {
+                    const mini = document.createElement("button");
+                    mini.className = "notaMinimizada";
+                    mini.textContent = "🗒️";
+                    mini.title = "Pulsa para restaurar la nota";
+                    mini.style.left = nota.x + "px";
+                    mini.style.top = nota.y + "px";
+                    mini.onclick = function() {
+                        nota.minimizada = false;
+                        /* Al restaurarla, dejamos espacio para que se vea completa. */
+                        nota.x = limitar(nota.x, 0, Math.max(0, zona.clientWidth - 195));
+                        nota.y = limitar(nota.y, 0, Math.max(0, zona.clientHeight - 145));
+                        mostrarNotas();
+                        guardarLocalmente();
+                    };
+                    zona.appendChild(mini);
+                    activarMovimiento(mini, nota, zona, true);
+                    return;
+                }
 
-            const texto =
-                JSON.stringify(
-                    datos,
-                    null,
-                    2
-                );
+                const tarjeta = document.createElement("div");
+                tarjeta.className = "nota nota-" + (nota.color || "amarilla");
+                tarjeta.style.left = limitar(nota.x, 0, Math.max(0, zona.clientWidth - 195)) + "px";
+                tarjeta.style.top = limitar(nota.y, 0, Math.max(0, zona.clientHeight - 145)) + "px";
 
+                /* Barra superior: sirve para mover la nota y contiene sus controles. */
+                const barra = document.createElement("div");
+                barra.className = "barraNota";
+                const etiqueta = document.createElement("span");
+                etiqueta.textContent = "✥ Nota";
+                etiqueta.style.fontSize = "12px";
+                barra.appendChild(etiqueta);
 
-            const archivo =
-                new Blob(
-                    [texto],
-                    {
-                        type:
-                            "application/json"
+                /* Selector de color. */
+                const selectorColor = document.createElement("select");
+                selectorColor.className = "colorNota";
+                selectorColor.title = "Elegir color";
+                [["amarilla", "Amarillo"], ["verde", "Verde"], ["azul", "Azul"], ["rosa", "Rosa"]].forEach(opcion => {
+                    const elementoOpcion = document.createElement("option");
+                    elementoOpcion.value = opcion[0];
+                    elementoOpcion.textContent = opcion[1];
+                    selectorColor.appendChild(elementoOpcion);
+                });
+                selectorColor.value = nota.color || "amarilla";
+                selectorColor.onpointerdown = evento => evento.stopPropagation();
+                selectorColor.onchange = function() {
+                    nota.color = selectorColor.value;
+                    mostrarNotas();
+                    guardarLocalmente();
+                };
+                barra.appendChild(selectorColor);
+
+                /* Botón de minimizar: la nota se convierte en un círculo amarillo. */
+                const minimizar = document.createElement("button");
+                minimizar.textContent = "⬆";
+                minimizar.title = "Minimizar nota";
+                minimizar.onclick = function(evento) {
+                    evento.stopPropagation();
+                    nota.minimizada = true;
+                    mostrarNotas();
+                    guardarLocalmente();
+                };
+                barra.appendChild(minimizar);
+
+                /* Botón para eliminar la nota completamente. */
+                const eliminar = document.createElement("button");
+                eliminar.textContent = "×";
+                eliminar.title = "Eliminar nota";
+                eliminar.onclick = function(evento) {
+                    evento.stopPropagation();
+                    if (confirm("¿Eliminar esta nota adhesiva?")) {
+                        elementoActual.notas = elementoActual.notas.filter(otra => otra.id !== nota.id);
+                        mostrarNotas();
+                        guardarLocalmente();
                     }
-                );
+                };
+                barra.appendChild(eliminar);
+                tarjeta.appendChild(barra);
 
+                /* Área de texto que se puede editar directamente. */
+                const texto = document.createElement("div");
+                texto.className = "textoNota";
+                texto.contentEditable = "true";
+                texto.spellcheck = true;
+                texto.textContent = nota.texto;
+                texto.addEventListener("input", function() {
+                    nota.texto = texto.innerText;
+                    guardarLocalmenteSinRecursion();
+                });
+                tarjeta.appendChild(texto);
+                zona.appendChild(tarjeta);
+                activarMovimiento(barra, nota, zona, false);
+            });
+        }
 
-            const url =
-                URL.createObjectURL(
-                    archivo
-                );
+        /* Evita que una nota pueda salirse de los límites de la carpeta abierta. */
+        function limitar(valor, minimo, maximo) { return Math.min(Math.max(valor, minimo), Math.max(minimo, maximo)); }
 
+        /*
+            Hace que una nota se pueda mover con mouse o dedo por toda la carpeta.
+            El movimiento se inicia desde la barra superior (o el botón amarillo).
+        */
+        function activarMovimiento(asa, nota, zona, esMini) {
+            asa.addEventListener("pointerdown", function(evento) {
+                /* No movemos la nota si el usuario está tocando un botón o selector. */
+                if (evento.target.closest("button") || evento.target.closest("select")) return;
+                evento.preventDefault();
+                asa.setPointerCapture(evento.pointerId);
+                const inicioX = evento.clientX;
+                const inicioY = evento.clientY;
+                const originalX = nota.x;
+                const originalY = nota.y;
+                function mover(movimiento) {
+                    const ancho = esMini ? 42 : 195;
+                    const alto = esMini ? 42 : 145;
+                    nota.x = limitar(originalX + movimiento.clientX - inicioX, 0, zona.clientWidth - ancho);
+                    nota.y = limitar(originalY + movimiento.clientY - inicioY, 0, zona.clientHeight - alto);
+                    const tarjeta = asa.closest(".nota") || asa;
+                    tarjeta.style.left = nota.x + "px";
+                    tarjeta.style.top = nota.y + "px";
+                }
+                function terminar() {
+                    asa.removeEventListener("pointermove", mover);
+                    asa.removeEventListener("pointerup", terminar);
+                    asa.removeEventListener("pointercancel", terminar);
+                    guardarLocalmenteSinRecursion();
+                }
+                asa.addEventListener("pointermove", mover);
+                asa.addEventListener("pointerup", terminar);
+                asa.addEventListener("pointercancel", terminar);
+            });
+        }
 
-            const enlace =
-                document.createElement(
-                    "a"
-                );
-
-
-            enlace.href =
-                url;
-
-
-            enlace.download =
-                "organizador-personal.json";
-
-
+        /* =========================================================
+           IMPORTAR Y EXPORTAR COPIAS DE SEGURIDAD JSON
+           Las notas viajan dentro de cada carpeta en la propiedad "notas".
+           ========================================================= */
+        function exportarArchivo() {
+            guardarContenidoActual();
+            guardarLocalmente();
+            const datos = { version: 3, contadorCreacion: contadorCreacion, carpetas: carpetas };
+            const texto = JSON.stringify(datos, null, 2);
+            const archivo = new Blob([texto], { type: "application/json" });
+            const url = URL.createObjectURL(archivo);
+            const enlace = document.createElement("a");
+            enlace.href = url;
+            enlace.download = "organizador-personal.json";
             enlace.click();
-
-
-            URL.revokeObjectURL(
-                url
-            );
-
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
         }
-
-
-        /* =========================
-           IMPORTAR
-        ========================= */
-
-        function importarArchivo() {
-
-            document
-                .getElementById(
-                    "archivoImportar"
-                )
-                .click();
-
-        }
-
+        function importarArchivo() { document.getElementById("archivoImportar").click(); }
 
         function procesarImportacion() {
-
-            const selector =
-                document.getElementById(
-                    "archivoImportar"
-                );
-
-
-            const archivo =
-                selector.files[0];
-
-
-            if (!archivo) {
-                return;
-            }
-
-
-            const lector =
-                new FileReader();
-
-
-            lector.onload =
-                function(e) {
-
-                    try {
-
-                        const datos =
-                            JSON.parse(
-                                e.target.result
-                            );
-
-
-                        if (
-                            !datos.carpetas ||
-                            !Array.isArray(
-                                datos.carpetas
-                            )
-                        ) {
-
-                            alert(
-                                "El archivo no es válido."
-                            );
-
-                            return;
-
-                        }
-
-
-                        carpetas =
-                            datos.carpetas;
-
-
-                        carpetas.forEach(
-                            carpeta => {
-
-                                if (
-                                    !carpeta.subcarpetas
-                                ) {
-
-                                    carpeta.subcarpetas =
-                                        [];
-
-                                }
-
-
-                                if (
-                                    !carpeta.adjuntos
-                                ) {
-
-                                    carpeta.adjuntos =
-                                        [];
-
-                                }
-
-
-                                if (
-                                    !carpeta.contenido
-                                ) {
-
-                                    carpeta.contenido =
-                                        "";
-
-                                }
-
-
-                                carpeta
-                                    .subcarpetas
-                                    .forEach(
-                                        subcarpeta => {
-
-                                            if (
-                                                !subcarpeta.adjuntos
-                                            ) {
-
-                                                subcarpeta.adjuntos =
-                                                    [];
-
-                                            }
-
-
-                                            if (
-                                                !subcarpeta.contenido
-                                            ) {
-
-                                                subcarpeta.contenido =
-                                                    "";
-
-                                            }
-
-                                        }
-                                    );
-
-                            }
-                        );
-
-
-                        contadorCreacion =
-                            datos.contadorCreacion ||
-                            carpetas.length;
-
-
-                        mostrarCarpetas();
-
-                        guardarLocalmente();
-
-
-                        alert(
-                            "Organizador importado correctamente."
-                        );
-
+            const selector = document.getElementById("archivoImportar");
+            const archivo = selector.files[0];
+            if (!archivo) return;
+            const lector = new FileReader();
+            lector.onload = function(evento) {
+                try {
+                    const datos = JSON.parse(evento.target.result);
+                    if (!datos || !Array.isArray(datos.carpetas)) {
+                        alert("El archivo no es válido.");
+                        return;
                     }
-
-                    catch(error) {
-
-                        alert(
-                            "No se pudo leer el archivo."
-                        );
-
-                    }
-
-                };
-
-
-            lector.readAsText(
-                archivo
-            );
-
-
-            selector.value = "";
-
+                    /* Pedimos confirmación porque importar reemplaza los datos actuales. */
+                    if (!confirm("Importar reemplazará las carpetas actuales. ¿Ya exportaste una copia de seguridad si la necesitas? ¿Continuar?")) return;
+                    carpetas = datos.carpetas;
+                    contadorCreacion = datos.contadorCreacion || carpetas.length;
+                    carpetas.forEach(carpeta => prepararElemento(carpeta));
+                    carpetaActual = null;
+                    elementoActual = null;
+                    esSubcarpetaActual = false;
+                    document.getElementById("vistaCarpeta").style.display = "none";
+                    document.getElementById("listaCarpetas").style.display = "block";
+                    mostrarCarpetas();
+                    guardarLocalmente();
+                    alert("Organizador importado correctamente.");
+                } catch (error) {
+                    alert("No se pudo leer el archivo JSON.");
+                    console.error(error);
+                } finally {
+                    selector.value = "";
+                }
+            };
+            lector.readAsText(archivo);
         }
 
+        /* =========================================================
+           CALCULADORA: MODO BÁSICO Y CIENTÍFICO
+           Las expresiones se validan antes de calcularlas.
+           Las funciones trigonométricas reciben grados y los convierten
+           a radianes, que es lo que JavaScript necesita internamente.
+           ========================================================= */
+        let expresionCalculadora = ""; // Operación que se ve en la pantalla.
+        let resultadoMostrado = false; // Indica si el último botón fue igual.
+        let modoCientifico = false;    // Empieza en modo básico.
 
-        /* =========================
-           CERRAR AL SALIR
-        ========================= */
+        const rejillaCalculadora = document.getElementById("rejillaCalculadora");
+        const pantallaCalculadora = document.getElementById("pantallaCalculadora");
 
-        window.addEventListener(
-            "beforeunload",
-            function() {
+        /* Agrega los botones científicos solo cuando el modo está activado. */
+        function dibujarBotonesCientificos() {
+            rejillaCalculadora.querySelectorAll(".extraCientifico").forEach(boton => boton.remove());
+            if (!modoCientifico) return;
+            const funciones = [
+                ["sin", "sin("], ["cos", "cos("], ["tan", "tan("], ["√", "sqrt("], ["log", "log("],
+                ["ln", "ln("], ["x²", "^2"], ["xʸ", "^"], ["π", "pi"], ["e", "e"],
+                ["(", "("], [")", ")"]
+            ];
+            funciones.forEach(([etiqueta, valor]) => {
+                const boton = document.createElement("button");
+                boton.className = "cientifica extraCientifico";
+                boton.textContent = etiqueta;
+                boton.onclick = () => pulsarCalculadora(valor);
+                /* Los botones se insertan antes de los botones básicos. */
+                rejillaCalculadora.insertBefore(boton, rejillaCalculadora.firstChild);
+            });
+            rejillaCalculadora.classList.add("cientificaActiva");
+        }
 
-                guardarContenidoActual();
+        function cambiarModoCalculadora() {
+            modoCientifico = !modoCientifico;
+            localStorage.setItem("modoCalculadora", modoCientifico ? "cientifico" : "basico");
+            document.getElementById("botonModoCalculadora").textContent = modoCientifico ? "Volver al modo básico" : "Activar modo científico";
+            document.getElementById("calculadoraAyuda").textContent = modoCientifico ? "sin, cos y tan usan grados (°). Usa paréntesis para agrupar." : "Trigonometría en grados (°).";
+            if (!modoCientifico) rejillaCalculadora.classList.remove("cientificaActiva");
+            dibujarBotonesCientificos();
+        }
 
-                guardarLocalmenteSinRecursion();
+        function mostrarEnCalculadora(texto) {
+            pantallaCalculadora.textContent = texto || "0";
+        }
 
+        function pulsarCalculadora(valor) {
+            if (valor === "AC") {
+                expresionCalculadora = "";
+                resultadoMostrado = false;
+                mostrarEnCalculadora("0");
+                return;
             }
-        );
-
-
-        /* =========================
-           CERRAR VENTANAS
-        ========================= */
-
-        document
-            .querySelectorAll(".ventana")
-            .forEach(
-                ventana => {
-
-                    ventana.addEventListener(
-                        "click",
-                        function(e) {
-
-                            if (
-                                e.target ===
-                                ventana
-                            ) {
-
-                                ventana.style.display =
-                                    "none";
-
-                            }
-
-                        }
-                    );
-
+            if (valor === "BORRAR") {
+                expresionCalculadora = expresionCalculadora.slice(0, -1);
+                mostrarEnCalculadora(expresionCalculadora);
+                return;
+            }
+            if (valor === "SIGNO") {
+                /* Para un número simple cambiamos el signo; para una expresión, añadimos un menos delante. */
+                if (!expresionCalculadora) expresionCalculadora = "-";
+                else if (/^-?\d*\.?\d+$/.test(expresionCalculadora)) {
+                    expresionCalculadora = String(-Number(expresionCalculadora));
+                } else {
+                    expresionCalculadora = "-1* (" + expresionCalculadora + ")";
                 }
+                mostrarEnCalculadora(expresionCalculadora);
+                return;
+            }
+            if (valor === "=") {
+                try {
+                    const resultado = calcularExpresion(expresionCalculadora);
+                    if (!Number.isFinite(resultado)) throw new Error("Resultado no válido");
+                    expresionCalculadora = String(Number(resultado.toPrecision(12)));
+                    mostrarEnCalculadora(expresionCalculadora);
+                    resultadoMostrado = true;
+                } catch (error) {
+                    mostrarEnCalculadora("Error");
+                    expresionCalculadora = "";
+                    resultadoMostrado = false;
+                }
+                return;
+            }
+            if (valor === "%") {
+                expresionCalculadora += "/100";
+                mostrarEnCalculadora(expresionCalculadora);
+                resultadoMostrado = false;
+                return;
+            }
+            if (resultadoMostrado && /^[0-9.]$/.test(valor)) expresionCalculadora = "";
+            resultadoMostrado = false;
+            expresionCalculadora += valor;
+            mostrarEnCalculadora(expresionCalculadora.replace(/\*/g, "×").replace(/\//g, "÷"));
+        }
+
+        function calcularExpresion(expresion) {
+            if (!expresion.trim()) return 0;
+            let preparada = expresion;
+            /* Las potencias escritas con ^ se convierten al operador ** de JavaScript. */
+            preparada = preparada.replace(/\^/g, "**");
+            preparada = preparada.replace(/\bpi\b/gi, "Math.PI");
+            preparada = preparada.replace(/\be\b/g, "Math.E");
+            preparada = preparada.replace(/sin\(/g, "sinGrados(");
+            preparada = preparada.replace(/cos\(/g, "cosGrados(");
+            preparada = preparada.replace(/tan\(/g, "tanGrados(");
+            preparada = preparada.replace(/sqrt\(/g, "Math.sqrt(");
+            preparada = preparada.replace(/log\(/g, "Math.log10(");
+            preparada = preparada.replace(/ln\(/g, "Math.log(");
+            /* Solo permitimos números, operadores y los nombres de funciones que nosotros agregamos. */
+            if (!/^[0-9+\-*/().,\sA-Za-z]*$/.test(preparada)) throw new Error("Caracteres no permitidos");
+            const nombresPermitidos = ["Math", "PI", "E", "sqrt", "log10", "log", "sinGrados", "cosGrados", "tanGrados"];
+            const palabras = preparada.match(/[A-Za-z]+/g) || [];
+            if (palabras.some(palabra => !nombresPermitidos.includes(palabra))) throw new Error("Función no permitida");
+            /* Function solo recibe la expresión después de comprobar los caracteres y los nombres permitidos. */
+            const funcion = new Function("sinGrados", "cosGrados", "tanGrados", 'return (' + preparada + ');');
+            return funcion(
+                grados => Math.sin(grados * Math.PI / 180),
+                grados => Math.cos(grados * Math.PI / 180),
+                grados => Math.tan(grados * Math.PI / 180)
             );
+        }
 
-
-        /* =========================
-           ATAJOS DE TECLADO
-        ========================= */
-
-        document.addEventListener(
-            "keydown",
-            function(e) {
-
-                /* ESC */
-
-                if (e.key === "Escape") {
-
-                    document
-                        .querySelectorAll(
-                            ".ventana"
-                        )
-                        .forEach(
-                            ventana => {
-
-                                ventana.style.display =
-                                    "none";
-
-                            }
-                        );
-
+        /* Permite mover la calculadora verticalmente arrastrando su barra superior. */
+        function activarMovimientoCalculadora() {
+            const barra = document.getElementById("barraCalculadora");
+            const calculadora = document.getElementById("calculadora");
+            barra.addEventListener("pointerdown", function(evento) {
+                evento.preventDefault();
+                barra.setPointerCapture(evento.pointerId);
+                const inicioY = evento.clientY;
+                const topInicial = calculadora.getBoundingClientRect().top;
+                function mover(movimiento) {
+                    const alturaMaxima = window.innerHeight - calculadora.offsetHeight - 5;
+                    const nuevoTop = limitar(topInicial + movimiento.clientY - inicioY, 5, alturaMaxima);
+                    calculadora.style.top = nuevoTop + "px";
+                    localStorage.setItem("posicionCalculadora", String(nuevoTop));
                 }
-
-
-                /* ENTER CARPETA */
-
-                if (
-                    e.key === "Enter" &&
-                    document.activeElement.id ===
-                    "nombreCarpeta"
-                ) {
-
-                    crearCarpeta();
-
+                function terminar() {
+                    barra.removeEventListener("pointermove", mover);
+                    barra.removeEventListener("pointerup", terminar);
+                    barra.removeEventListener("pointercancel", terminar);
                 }
+                barra.addEventListener("pointermove", mover);
+                barra.addEventListener("pointerup", terminar);
+                barra.addEventListener("pointercancel", terminar);
+            });
+        }
 
+        /* =========================================================
+           GUARDAR AL SALIR, CERRAR VENTANAS Y ATAJOS
+           ========================================================= */
+        window.addEventListener("beforeunload", function() {
+            guardarContenidoActual();
+            guardarLocalmenteSinRecursion();
+        });
 
-                /* ENTER SUBCARPETA */
+        document.querySelectorAll(".ventana").forEach(ventana => {
+            ventana.addEventListener("click", function(evento) {
+                if (evento.target === ventana) ventana.style.display = "none";
+            });
+        });
 
-                if (
-                    e.key === "Enter" &&
-                    document.activeElement.id ===
-                    "nombreSubcarpeta"
-                ) {
-
-                    crearSubcarpeta();
-
-                }
-
+        document.addEventListener("keydown", function(evento) {
+            /* Escape cierra cualquier ventana emergente que esté abierta. */
+            if (evento.key === "Escape") {
+                document.querySelectorAll(".ventana").forEach(ventana => ventana.style.display = "none");
             }
-        );
+            /* Enter crea una carpeta si el cursor está en el campo de nombre correspondiente. */
+            if (evento.key === "Enter" && document.activeElement.id === "nombreCarpeta") crearCarpeta();
+            if (evento.key === "Enter" && document.activeElement.id === "nombreSubcarpeta") crearSubcarpeta();
+        });
 
-
-        /* =========================
-           INICIO
-        ========================= */
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            function() {
-
-                cargarTema();
-
-                cargarGuardadoLocal();
-
+        /* =========================================================
+           INICIAR TODO CUANDO EL DOCUMENTO ESTÉ LISTO
+           ========================================================= */
+        document.addEventListener("DOMContentLoaded", function() {
+            cargarTema();
+            cargarGuardadoLocal();
+            activarMovimientoCalculadora();
+            /* Recuperamos el modo básico/científico elegido anteriormente. */
+            modoCientifico = localStorage.getItem("modoCalculadora") === "cientifico";
+            document.getElementById("botonModoCalculadora").textContent = modoCientifico ? "Volver al modo básico" : "Activar modo científico";
+            if (modoCientifico) {
+                document.getElementById("calculadoraAyuda").textContent = "sin, cos y tan usan grados (°). Usa paréntesis para agrupar.";
+                dibujarBotonesCientificos();
             }
-        );
-
+            /* Recuperamos la altura donde el usuario dejó la calculadora. */
+            const posicionGuardada = Number(localStorage.getItem("posicionCalculadora"));
+            if (Number.isFinite(posicionGuardada) && posicionGuardada > 0) {
+                document.getElementById("calculadora").style.top = limitar(posicionGuardada, 5, window.innerHeight - 100) + "px";
+            }
+        });
     </script>
-
 </body>
-
 </html>
